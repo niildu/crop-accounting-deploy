@@ -1,0 +1,114 @@
+table, tr, td { 
+	border: 1px solid #000000;
+	border: 1px solid #000000;
+	border-style: solid;
+	border-width: 0.009em;
+	border-collapse: collapse;
+	padding: 2px;
+	text-align: center;
+	font-size: 12px;
+}
+
+.h1-text {
+	text-align: center;
+	line-height: 15px;
+	top: 4px;
+}
+
+.sp_text {
+	font-size: 12px;
+}
+
+.sp_hedertext {
+	font-size: 12px;
+}
+
+.code_div {
+	width: 190px;
+	height: 14px;
+	float: left;
+	margin-bottom: 4px;
+}
+
+.cove_sub_div_with_border {
+	width: 12px;
+	height: 12px;
+	border-style: solid;
+	border-width: 0.01em;
+	float: left;
+	margin: 1px;
+	text-align: center;
+	font-size: 11px;
+	font-family: SolaimanLipi;
+	padding: 1px;
+	list-style-type: Bengali;
+}
+
+.cove_sub_div_without_border {
+	width: 25px;
+	height: 25px;
+	float: left;
+}
+
+.name:after {
+	clip: rect(0px, 190px, 20px, 0px);
+	content: " ..................... ";
+	position: absolute;
+	z-index: -1;
+}
+
+.pageToPrint {
+	width: 300px;
+	height: 210px;
+}
+
+.doublePageEnd {
+	page-break-after: always;
+}
+
+.page_odd {
+	margin-left: 320px;
+	width: 300px;
+	height: 210px;
+	/*page-break-after: always;*/
+}
+
+.page_even {
+	width: 300px;
+	height: 210px;
+	/*page-break-after: always;*/
+}
+
+@page {
+	size: 9.5in 4.125in;
+	page-break-after: always;
+}
+
+@page {
+	size: 15cm 8cm;
+	margin: 30mm 45mm 30mm 45mm;
+	page-break-after: always;
+}
+
+#printcontent {
+	width: 692px;
+	height: 292px;
+	border: none;
+	font-size: 12pt;
+	font-family: SolaimanLipi;
+	/* for firefox, safari, chrome, etc. */
+	/*-webkit-transform: rotate(-90deg);  
+				-moz-transform: rotate(-90deg);  
+				*/
+	/* for ie */
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+
+@font-face {
+	font-family: SolaimanLipi;
+	src: url('../../fonts/SolaimanLipi.ttf');
+}
+
+body {
+	font-family: SolaimanLipi
+}

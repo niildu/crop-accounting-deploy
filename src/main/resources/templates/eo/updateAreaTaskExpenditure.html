@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'updateAreaTaskExpenditure')}">
+<body>
+	<div class="wrapper-sm">
+		<div>
+			<div ng-app="myApp">
+				<div class="panel panel-default">
+				<div class="panel-heading">
+					<span th:text="#{expenditure.estimate}"></span>
+				</div>
+				<div class="panel-body">
+						<form th:action="@{/eo/updateAreaExpenditure}" th:method="POST" th:object="${cropTaskMap}" class="form-horizontal">
+							<input type="hidden" name="areaExpenseId" 
+								th:value="${cropTaskMap.isPresent()} ? ${cropTaskMap.get().id} : 0" />
+						<div>
+							<div ng-controller="dropdownCtrl">
+								<div class="panel">
+									<table class="display table" cellspacing="0" width="100%">
+										<thead class="bg-light">
+											<tr>
+												<th th:text="#{activity.name}"></th>
+												<th th:text="#{task.name}"></th>
+												<th style="text-align: center" th:text="#{task.date}"></th>
+												<th style="text-align: center" th:text="#{task.desc}"></th>
+												<th style="text-align: center" th:text="#{item.price}"></th>
+												<th style="text-align: center" th:text="#{labour.price}"></th>
+												<th><span class="label bg-danger pull-right m-t-xs" th:text="${cropTaskMap.isPresent() && cropTaskMap.get().areaExpenceItemValueList != null} ? ${cropTaskMap.get().areaExpenceItemValueList.size()} : 0"></span>
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr data-ng-repeat="item in taskList" ng-model="taskDtl"
+												class="text-center">
+												<td width="20%" style="text-align: left">{{item.activityName}}</td>
+												<input type="hidden" name="taskId" value="{{item.id}}" />
+												<td width="20%" style="text-align: left">{{item.taskName}}</td>
+												<td width="10%" style="text-align: center">{{item.date}}</td>
+												<td width="20%">
+													<select name="cropExpenceList.expenceItemValue.cropActivityItem" class="form-control">
+														<option value="">-- <span th:text="#{choose.all}">--</option>
+														<option data-ng-repeat="obj in expenceItemList"
+															data-ng-if="obj.cropActivityTypeId == item.task"
+															ng-selected="obj.cropActivityItemId == item.activityItem ? true: false"
+															value="{{obj.cropActivityItemId}}">{{obj.cropActivityItem}}</option>
+													</select>
+												</td>
+
+												<td width="15%"><input type="text"
+													name="cropExpenceList.expenceItemValue.itemExpence"
+													placeholder="{{item.itemExpence}}" value="{{item.itemExpence}}" class="form-control"></td>
+
+												<td width="15%"><input type="text"
+													name="cropExpenceList.expenceItemValue.labourExpence"
+													placeholder="{{item.labourExpence}}" value="{{item.labourExpence}}" class="form-control"></td>
+												<td>
+													<ul class="nav pull-left panel_toolbox">
+														<li><a onclick="closeInputField(0);"><i
+																class="fa fa-close"></i></a>
+													</ul>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								
+								<script type="text/javascript">
+									var expenceItemList = new Array();
+									var taskList = new Array();
+									var j = 0;
+								</script>
+								<div th:each="expenceItem, iter : ${expenceItemList}">
+									<script type="text/javascript" th:inline="javascript">
+										/*[+
+											var rowData = {id:[[${expenceItem.id}]], 
+												cropActivityId:[[${expenceItem.cropActivity != null} ? ${expenceItem.cropActivity.id} : '']],
+												cropActivity: [[${expenceItem.cropActivity != null} ? ${expenceItem.cropActivity.name} : '']],
+												cropActivityTypeId: [[${expenceItem.cropActivityType != null} ? ${expenceItem.cropActivityType.id} : '']],
+												cropActivityType:[[${expenceItem.cropActivityType != null} ? ${expenceItem.cropActivityType.name} : '']], 
+												cropActivityItemId:[[${expenceItem.cropActivityItem != null} ? ${expenceItem.cropActivityItem.id} : '']],
+												cropActivityItem:[[${expenceItem.cropActivityItem != null} ? ${expenceItem.cropActivityItem.name} : '']]};
+											expenceItemList.push(rowData);
+											//j++;
+										+]*/
+										</script>
+								</div>
+								<div th:if="${cropTaskMap.isPresent() && cropTaskMap.get().areaExpenceItemValueList != null && !cropTaskMap.get().areaExpenceItemValueList.empty}">
+									<div th:each="expenceItemValue, iter : ${cropTaskMap.get().areaExpenceItemValueList}">
+										<script type="text/javascript" th:inline="javascript">
+										/*[+
+											var data = {
+												id : [[${expenceItemValue.cropCalenderTask.id}]], 
+												name :[[${expenceItemValue.cropCalenderTask.taskName != null} ? ${expenceItemValue.cropCalenderTask.taskName} : '']],
+												date : [[${expenceItemValue.cropCalenderTask.taskDateStr != null} ? ${expenceItemValue.cropCalenderTask.taskDateStr} : '']],
+												activity : [[${expenceItemValue.cropCalenderTask.cropActivity != null} ? ${expenceItemValue.cropCalenderTask.cropActivity.id} : '']],
+												activityName : [[${expenceItemValue.cropCalenderTask.cropActivity != null} ? ${expenceItemValue.cropCalenderTask.cropActivity.name} : '']], 
+												task : [[${expenceItemValue.cropCalenderTask.cropActivityType != null} ? ${expenceItemValue.cropCalenderTask.cropActivityType.id} : '']],
+												taskName : [[${expenceItemValue.cropCalenderTask.cropActivityType != null} ? ${expenceItemValue.cropCalenderTask.cropActivityType.name} : '']],
+												comments : [[${expenceItemValue.cropCalenderTask.comments != null} ? ${expenceItemValue.cropCalenderTask.comments} : '']],
+												activityItem : [[${expenceItemValue.cropActivityItem != null} ? ${expenceItemValue.cropActivityItem.id} : '']],
+												itemExpence : [[${expenceItemValue.itemExpence != null} ? ${expenceItemValue.itemExpence} : 0]],
+												labourExpence : [[${expenceItemValue.labourExpence != null} ? ${expenceItemValue.labourExpence} : 0]]
+											};
+											taskList.push(data);
+										+]*/
+										</script>
+									</div>
+								</div>
+							</div>
+
+
+							<div class="form-actions">
+								<button type="submit" class="btn btn-sm btn-primary" th:text="#{crop.save}"></button>
+								<button type="reset" class="btn" th:text="#{Reset}"></button>
+							</div>
+							</form>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+	function closeInputField(i) {
+		if (i > 0) {
+			document.getElementById('add_index' + i).outerHTML = '';
+		}
+	}
+
+	$(document)
+			.ready(
+					function() {
+						var i = 0;
+						$("#add_row")
+								.click(
+										function() {
+											i++;
+											var copy = document.getElementById('copy').innerHTML;
+											copy = copy.replace('add_index0', 'add_index' + i);
+											copy = copy.replace('taskname[0]', 'taskname[' + i + ']');
+											copy = copy.replace('taskdate[0]', 'taskdate[' + i + ']');
+											copy = copy.replace('closeInputField(0)', 'closeInputField(' + i + ')');
+											$('#repeat').append(copy);
+										});
+					});
+</script>
+<script type="text/javascript">
+	var myApp = angular.module("myApp", []);
+	//var cropActivityList = [];
+	//var cropActivityTypeList = [];
+	var i = 0;    
+	
+	myApp.factory("CustomerService", ['$filter', 
+	      function($filter) {
+		    var service = {}; 
+			
+			service.getExpenceItemList = function(crop){
+	            var expenceItemList = ($filter('filter')(expenceItemList, {crop_id: crop}));      
+	            return expenceItemList;
+	        };
+			
+	        return service;       
+	    }
+	]);
+	    
+	myApp.controller('dropdownCtrl', ['$scope','CustomerService', 
+	   function($scope, CustomerService) {
+			$scope.taskList = taskList;
+			$scope.taskDtl = {
+			//Name:'', 
+				id: '', name: '', date: '', activity: '', activityName : '', task: '', taskName: '', comments: ''
+			};
+			$scope.expenceItemList = expenceItemList;
+	
+	
+			$scope.getVarities = function(index) {
+			//$scope.varities = CustomerService.getCropVarity($scope.cropdtl.crop);
+	    	}    
+		}
+	]);
+</script>
+</body>
+</html>

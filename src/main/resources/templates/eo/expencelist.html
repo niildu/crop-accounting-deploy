@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'expencelist')}">
+<body>
+
+	<div class="wrapper-sm">
+		<div>
+			<div>
+				<div class="row">
+					<div class="col-sm-9">
+						<div class="panel panel-default">
+							<div class="panel-heading font-bold" th:text="#{activity.add}"></div>
+							<div class="panel-body">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th th:text="#{activity.list}"></th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="expence, iter : ${cropExpences}">
+											<th scope="row" th:text="${iter.index + 1}"></th>
+											<td th:text="${expence.type}"></td>
+											<td th:text="${expence.crop}"></td>
+											<td th:text="${expence.varity}"></td>
+
+											<td><a
+												class="btn btn-mini btn-warning"
+												th:href="@{/eo/createAreaTaskExpenditure?id=} + ${expence.id}"><i
+													class="icon-edit"></i> 
+													<span th:text="#{edit}"></span></a>
+												
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th th:text="#{activity.list}"></th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="expence, iter : ${areaExpences}">
+											<th scope="row" th:text="${iter.index + 1}"></th>
+											<td th:text="${expence.type}"></td>
+											<td th:text="${expence.crop}"></td>
+											<td th:text="${expence.varity}"></td>
+
+											<td><a
+												class="btn btn-mini btn-warning"
+												th:href="@{/eo/updateAreaTaskExpenditure?id=} + ${expence.id}"><i
+													class="icon-edit"></i> 
+													<span th:text="#{edit}"></span></a>
+												
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</body>
+</html>

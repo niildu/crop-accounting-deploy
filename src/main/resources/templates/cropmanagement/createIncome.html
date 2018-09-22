@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'createIncome')}">
+<body>
+	<div class="wrapper-md" ng-controller="FormDemoCtrl">
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="panel panel-default">
+					<div class="panel-heading font-bold"><span th:text="#{crop.income.desc}"></span></div>
+					<div class="panel-body">
+						<form th:action="@{submitIncome}" th:method="POST" th:object="${cropIncome}" class="form-horizontal">
+						<input type="hidden" th:field="*{id}" name="cropIncome.id"	th:value="${cropIncome} != null ? ${cropIncome.id} : ''"/>
+						<div class="control-group">
+							<label for="cropIncome.name" class="" th:text="#{cropIncome.name}"></label>
+							<div class="controls ">
+								<input type="text" th:field="*{name}" required="required" name="cropIncome.name"
+									class="form-control" id="cropIncome.name" th:value="${cropIncome} != null ? ${cropIncome.name} : ''">
+									<span class="help-inline"></span>
+							</div>
+						</div>
+						<div class="well clearFix"></div>
+						<div class="form-actions">
+							<button type="submit" class="btn btn-sm btn-primary" th:text="#{crop.save}"></button>
+							<button type="reset" class="btn" th:text="#{Reset}"></button>
+						</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

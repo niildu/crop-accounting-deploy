@@ -1,0 +1,46 @@
+<!--==========================
+    Header
+  ============================-->
+<header th:fragment="header" id="header">
+	<div class="container">
+		<div id="logo" class="pull-left">
+			<a href="#body"><img src="../img/logo.png" alt="" title="" /></a>
+		</div>
+
+		<nav id="nav-menu-container">
+			<ul class="nav-menu sf-js-enabled sf-arrows"
+				style="touch-action: pan-y;">
+				<li
+					th:class="${#httpServletRequest.requestURI == '/index' ? 'menu-active' : 'menu'}">
+					<a href="/index" th:text="#{application.dashboard.home}"></a>
+				</li>
+				<!--
+          <li th:class="${#httpServletRequest.requestURI.contains('/cropmanagement') ? 'menu-active menu-has-children' : 'menu-has-children'}"><a href="" class="sf-with-ul">ক্রপ ম্যানেজমেন্ট</a>
+            <ul>
+              <li><a href="/cropmanagement/createcropcalendar">ফসেলর জীবন চক্রের তথ্য িদন</a></li>
+              <li><a href="#">নতুন ফেসলর তথ্য িদন</a></li>
+              <li><a href="#">ফসেলর খরচের িহসাব করুন</a></li>
+              <li><a href="#">করণীয় যুক্তকরণ</a></li>
+            </ul>
+          </li>
+          <li class="menu-has-children"><a href="" class="sf-with-ul">ইউজার মান্যেমন্ট</a>
+            <ul>
+              <li><a href="#">Drop Down 1</a></li>
+              <li><a href="#">Drop Down 3</a></li>
+              <li><a href="#">Drop Down 4</a></li>
+              <li><a href="#">Drop Down 5</a></li>
+            </ul>
+          </li>
+          -->
+				<li><a href="#contact" th:text="#{application.header.contact}"></a></li>
+				<li>
+					<form id="demo-2">
+						<input type="search" placeholder="Search">
+					</form>
+				</li>
+			</ul>
+		</nav>
+		<!-- #nav-menu-container -->
+	</div>
+</header>
+<!-- #header -->

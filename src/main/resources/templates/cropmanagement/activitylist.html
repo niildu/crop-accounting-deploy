@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'activitylist')}">
+<body>
+
+	<div class="wrapper-sm">
+		<div>
+			<div>
+				<div class="row">
+					<div class="col-sm-9">
+						<div class="panel panel-default">
+							<div class="panel-heading font-bold" th:text="#{activity.add}"></div>
+							<div class="panel-body">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th th:text="#{activity.list}"></th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="cropTaskMap, iter : ${activityList}">
+											<th scope="row" th:text="${iter.index + 1}"></th>
+											<td th:text="${cropTaskMap.name}"></td>
+
+											<td><a
+												class="btn btn-mini btn-warning"
+												th:href="@{/cropmanagement/editActivity(id = ${cropTaskMap.id)}}"><i
+													class="icon-edit"></i> 
+													<span th:text="#{edit}"></span></a>
+												
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-sm-3 no-padding-left bg-white">
+						<div class="wrapper-sm">
+							<form th:method="POST" th:action="@{/cropmanagement/submitActivity}" th:object="${cropActivity}" class="form-horizontal">
+							
+							<input type="hidden" th:field="*{id}" name="cropActivity.id"	th:value="${cropActivity} != null ? ${cropActivity.id} : ''"/> 
+							
+							<div class="control-group">
+								<label for="cropActivity.name" class="" th:text="#{cropActivity.name}"></label>
+								<div class="controls ">
+									<input type="text" th:field="*{name}" required="required" name="cropActivity.name"
+										class="form-control" id="cropActivity.name" th:value="${cropActivity} != null ? ${cropActivity.name} : ''">
+										<span class="help-inline"></span>
+								</div>
+							</div>
+							<div class="well clearfix"></div>
+							<div class="form-actions">
+								<button type="submit" class="btn btn-sm btn-primary" th:text="#{crop.save}"></button>
+							</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</body>
+</html>
