@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'createAreaTaskExpenditure')}">
+<body>
+	<div class="wrapper-sm">
+		<div>
+			<div ng-app="myApp">
+				<div class="panel panel-default">
+				<div class="panel-heading">
+					<span th:text="#{expenditure.estimate}"></span>
+				</div>
+				<div class="panel-body">
+						<form th:action="@{/eo/submitAreaEarnings}" th:method="POST" th:object="${cropTaskMap}" class="form-horizontal">
+							<input type="hidden" name="templateIncomeId" 
+							th:value="${cropTaskMap.isPresent()} ? ${cropTaskMap.get().id} : 0" />
+						<div>
+							<div ng-controller="dropdownCtrl">
+								<div class="panel">
+									<table class="display table" cellspacing="0" width="100%">
+										<thead class="bg-light">
+											<tr>
+												<th th:text="#{activity.name}"></th>
+												<th th:text="#{task.name}"></th>
+												<th style="text-align: center" th:text="#{task.date}"></th>
+												<th style="text-align: center" th:text="#{item.price}"></th>
+												<th><span class="label pull-right m-t-xs" th:text="${cropTaskMap.isPresent() && cropTaskMap.get().incomeItemValueList != null} ? ${cropTaskMap.get().incomeItemValueList.size()} : 0"></span>
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr data-ng-repeat="item in taskList" ng-model="taskDtl"
+												class="text-center">
+												<input type="hidden" name="income" id="income[{{$index}}]" value="income_{{item.cropIncome}}" />
+												<td width="24%" style="text-align: left">{{item.name}}</td>
+												<input type="hidden" name="taskId" value="{{item.id}}" />
+												<td width="24%" style="text-align: left">
+													<input type="text" name="incomeItems" id="incomeItems[{{$index}}]" required value="{{item.type}}" class="form-control txtBox"></td>
+												<td width="15%" style="text-align: center">
+													<input type="number" name="days" id="day[{{$index}}]" value="{{item.date}}" required class="form-control txtBox"></td>
+												<td width="15%">
+													<input type="number" name="amounts" id="amount[{{$index}}]" value="{{item.amount}}" required class="form-control txtBox">
+												</td>
+												<td width="15%">
+													<input type="number" name="values" id="values[{{$index}}]" value="{{item.itemExpence}}" required class="form-control txtBox">
+												</td>
+												<td>
+													<ul class="nav pull-left panel_toolbox">
+														<li><a onclick="closeInputField(0);"><i
+																class="fa fa-close"></i></a>
+													</ul>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								
+								<script type="text/javascript">
+									var expenceItemList = new Array();
+									var taskList = new Array();
+									var j = 0;
+								</script>
+								<div th:each="expenceItem, iter : ${expenceItemList}">
+									<script type="text/javascript" th:inline="javascript">
+										/*[+
+											var rowData = {id:[[${expenceItem.id}]], 
+												cropActivityId:[[${expenceItem.cropActivity != null} ? ${expenceItem.cropActivity.id} : '']],
+												cropActivity: [[${expenceItem.cropActivity != null} ? ${expenceItem.cropActivity.name} : '']],
+												cropActivityTypeId: [[${expenceItem.cropActivityType != null} ? ${expenceItem.cropActivityType.id} : '']],
+												cropActivityType:[[${expenceItem.cropActivityType != null} ? ${expenceItem.cropActivityType.name} : '']], 
+												cropActivityItemId:[[${expenceItem.cropActivityItem != null} ? ${expenceItem.cropActivityItem.id} : '']],
+												cropActivityItem:[[${expenceItem.cropActivityItem != null} ? ${expenceItem.cropActivityItem.name} : '']]};
+											expenceItemList.push(rowData);
+											//j++;
+										+]*/
+										</script>
+								</div>
+								<div th:if="${cropTaskMap.isPresent() && cropTaskMap.get().incomeItemValueList != null && !cropTaskMap.get().incomeItemValueList.empty}">
+									<div th:each="incomeItemValue, iter : ${cropTaskMap.get().incomeItemValueList}">
+										<script type="text/javascript" th:inline="javascript">
+										/*[+
+											var data = {
+												id : [[${incomeItemValue.id}]],
+												cropIncome :[[${incomeItemValue.cropIncome != null} ? ${incomeItemValue.cropIncome.id} : 0]],
+												name :[[${incomeItemValue.cropIncome != null} ? ${incomeItemValue.cropIncome.name} : '']],
+												type :[[${incomeItemValue.type != null} ? ${incomeItemValue.type} : '']],
+												amount :[[${incomeItemValue.amount != null} ? ${incomeItemValue.amount} : '']],
+												date : [[${incomeItemValue.day != 0} ? ${incomeItemValue.day} : 0]],
+												itemExpence : [[${incomeItemValue.totValue != null} ? ${incomeItemValue.totValue} : 0]],
+												labourExpence : [[${incomeItemValue.totValue != null} ? ${incomeItemValue.totValue} : 0]]
+											};
+											taskList.push(data);
+										+]*/
+										</script>
+									</div>
+								</div>
+							</div>
+
+
+							<div class="form-actions">
+								<button type="submit" class="btn btn-sm btn-primary" th:text="#{crop.save}"></button>
+								<button type="reset" class="btn" th:text="#{Reset}"></button>
+							</div>
+							</form>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+	function closeInputField(i) {
+		if (i > 0) {
+			document.getElementById('add_index' + i).outerHTML = '';
+		}
+	}
+
+	$(document)
+			.ready(
+					function() {
+						var i = 0;
+						$("#add_row")
+								.click(
+										function() {
+											i++;
+											var copy = document.getElementById('copy').innerHTML;
+											copy = copy.replace('add_index0', 'add_index' + i);
+											copy = copy.replace('taskname[0]', 'taskname[' + i + ']');
+											copy = copy.replace('taskdate[0]', 'taskdate[' + i + ']');
+											copy = copy.replace('closeInputField(0)', 'closeInputField(' + i + ')');
+											$('#repeat').append(copy);
+										});
+					});
+</script>
+<script type="text/javascript">
+	var myApp = angular.module("myApp", []);
+	//var cropActivityList = [];
+	//var cropActivityTypeList = [];
+	var i = 0;    
+	
+	myApp.factory("CustomerService", ['$filter', 
+	      function($filter) {
+		    var service = {}; 
+			
+			service.getExpenceItemList = function(crop){
+	            var expenceItemList = ($filter('filter')(expenceItemList, {crop_id: crop}));      
+	            return expenceItemList;
+	        };
+			
+	        return service;       
+	    }
+	]);
+	    
+	myApp.controller('dropdownCtrl', ['$scope','CustomerService', 
+	   function($scope, CustomerService) {
+			$scope.taskList = taskList;
+			$scope.taskDtl = {
+			//Name:'', 
+				id: '', name: '', date: '', activity: '', activityName : '', task: '', taskName: '', comments: ''
+			};
+			$scope.expenceItemList = expenceItemList;
+	
+	
+			$scope.getVarities = function(index) {
+			//$scope.varities = CustomerService.getCropVarity($scope.cropdtl.crop);
+	    	}    
+		}
+	]);
+</script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<div th:fragment="sidebar" class="col-sm-3 col-md-3">
+	<ul class="nav nav-pills flex-column">
+		<li class="nav-item">
+			<p class="nav-link title" href="#">ক্রপ মান্যেেমন্ট<span class="sr-only">(current)</span></p>
+		</li>
+		<!--  links - create crop calender -->
+		<li class="nav-item">
+			<a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" 
+				th:class="${#httpServletRequest.requestURI == '/cropmanagement/createcropcalendar' ? 'nav-link active' : 'nav-link'}"
+			 	th:href="@{/cropmanagement/createcropcalendar}">
+				<span th:text="#{create.crop.calendar}"></span>
+			</a>
+		</li>
+		<!--  links - create crop -->
+		<li class="nav-item">
+			<a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" 
+				th:class="${#httpServletRequest.requestURI == '/cropmanagement/createcrop' ? 'nav-link active' : 'nav-link'}" 
+				th:href="@{/cropmanagement/createcrop}"> 
+				<span th:text="#{create.crop}"></span></a>
+		</li>
+		<!--  links - create crop list -->
+		<li class="nav-item">
+			<a th:if="${#authorization.expression('hasRole(''USER'')')}" 
+				th:class="${#httpServletRequest.requestURI == '/app/croplist' ? 'nav-link active' : 'nav-link'}"
+				th:href="@{/app/croplist}"> 
+			<span th:text="#{create.crop.list}"></span></a>
+		</li>
+		<!--  links - create activity -->
+		<li class="nav-item">
+			<a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" 
+				th:class="${#httpServletRequest.requestURI == '/cropmanagement/activitylist' ? 'nav-link active' : 'nav-link'}"
+				th:href="@{/cropmanagement/activitylist}">
+				<span th:text="#{activity.add}"></span>
+		</a></li>
+		<!--  links - create activity type -->
+		<li class="nav-item">
+			<a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" 
+				th:class="${#httpServletRequest.requestURI == '/cropmanagement/activityTypeList' ? 'nav-link active' : 'nav-link'}"
+				th:href="@{/cropmanagement/activityTypeList}">
+				<span th:text="#{activitytype.add}"></span>
+		</a></li>
+		<!--  links - create activity item -->
+		<li class="nav-item">
+			<a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" 
+				th:class="${#httpServletRequest.requestURI == '/cropmanagement/activityItemList' ? 'nav-link active' : 'nav-link'}"
+				th:href="@{/cropmanagement/activityItemList}">
+				<span th:text="#{activityItem.add}"></span>
+		</a></li>
+		<!--  links - create expence item -->
+		<li class="nav-item">
+			<a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" 
+				th:class="${#httpServletRequest.requestURI == '/cropmanagement/expenceItemList' ? 'nav-link active' : 'nav-link'}"
+				th:href="@{/cropmanagement/expenceItemList}"> <span
+				th:text="#{crop.mapping.add}"></span>
+		</a></li>
+		<li class="nav-item">
+			<a th:if="${#authorization.expression('hasRole(''USER'')')}" 
+				th:class="${#httpServletRequest.requestURI == '/app/cropcalender' ? 'nav-link active' : 'nav-link'}"
+				th:href="@{/app/cropcalender}"> <span
+				th:text="#{Calendar.1}"></span>
+		</a></li>
+		<li class="nav-item">
+		 <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" 
+			th:class="${#httpServletRequest.requestURI == '/cropmanagement/createearnings' ? 'nav-link active' : 'nav-link'}"
+			th:href="@{/cropmanagement/createearnings}"> <span
+				th:text="#{income.estimate}"></span>
+		</a></li>
+		<li class="nav-item">
+			<a th:if="${#authorization.expression('hasRole(''USER'')')}" 
+				th:class="${#httpServletRequest.requestURI == '/app/farmercropearning' ? 'nav-link active' : 'nav-link'}"
+				th:href="@{/app/farmercropearning}"> <span
+				th:text="#{expenditure.estimate.all}"></span>
+		</a>
+		</li>
+		
+		<li class="nav-item">
+			<a th:if="${#authorization.expression('hasRole(''EO'')')}" 
+				th:class="${#httpServletRequest.requestURI == '/eo/expencelist' ? 'nav-link active' : 'nav-link'}"
+				th:href="@{/eo/expencelist}"> <span
+				th:text="#{expence.estimate}"></span>
+		</a>
+		</li>
+		
+		<li class="nav-item">
+			<a th:if="${#authorization.expression('hasRole(''EO'')')}" 
+				th:class="${#httpServletRequest.requestURI == '/eo/incomelist' ? 'nav-link active' : 'nav-link'}"
+				th:href="@{/eo/incomelist}"> <span
+				th:text="#{expenditure.estimate.all}"></span>
+		</a>
+		</li>
+		<!--
+		<li><a
+			href="@{Users.list()}"> <span th:text="#{view.user}"></span>
+		</a></li> 
+		<li><a
+			href="@{Users.create()}" #{if 'Users.create' ==
+			request.action} class="active"#{/if}> <span
+				th:text="#{edit.user}"></span>
+		</a></li>
+		<li><a
+			href="@{Users.acl()}" #{if 'Users.acl' ==
+			request.action} class="active"#{/if}> <span
+				th:text="#{user.acl}"></span>
+		</a>
+		</li>
+		-->
+	</ul>
+	<!-- 
+	<ul class="nav nav-pills flex-column">
+		<li class="nav-item">
+			<p class="nav-link title" href="#">User Management<span class="sr-only">(current)</span></p>
+		</li>
+		<li><a
+			href="@{Users.list()}"> <span th:text="#{view.user}"></span>
+		</a></li> 
+		<li><a
+			href="@{Users.create()}" #{if 'Users.create' ==
+			request.action} class="active"#{/if}> <span
+				th:text="#{edit.user}"></span>
+		</a></li>
+		<li><a
+			href="@{Users.acl()}" #{if 'Users.acl' ==
+			request.action} class="active"#{/if}> <span
+				th:text="#{user.acl}"></span>
+		</a>
+		</li>
+	</ul>
+	-->
+</div>

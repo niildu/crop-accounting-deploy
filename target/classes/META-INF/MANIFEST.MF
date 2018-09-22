@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: java-getting-started
+Implementation-Version: 1.0
+Built-By: wahid
+Implementation-Vendor-Id: com.example
+Build-Jdk: 1.8.0_181
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/java-getting-started
+Created-By: Maven Integration for Eclipse
+

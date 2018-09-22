@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'croplist')}">
+<body>
+	<div class="wrapper-md">
+		<div class="row">
+			<div class="col-sm-9">
+				<div class="panel panel-default">
+					<div class="panel-heading font-bold" th:text="#{crop.add}"></div>
+					<div class="panel-body">
+						<form method="POST" th:action="@{/app/submit}" th:object="${crop}"
+							class="form-horizontal">
+							<input type="hidden" name="crop.id"
+								th:field="*{id}" th:value="${crop != null && crop.id != null} ? ${crop.id} : ''" />
+							<input type="hidden" name="crop.portal.id"
+								th:field="*{portalid}" th:value="0" />
+
+							<div ng-app="myApp" ng-controller="dropdownCtrl">
+								<div class="form-group">
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label for="state" class="col-sm-12 control-label" th:text="#{crop.name}"></label>
+												<div class="col-sm-12">
+													<select required="required" name="cropTaskMap.crop" th:field="*{cropId}" ng-model="cropdtl.crop"
+														ng-options="x.id as x.name for x in crops"
+														ng-change="getVarities()" class="form-control"
+														id="state">
+														<option value="" th:text="#{choose.all}"></option>
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label for="city" class="col-sm-12 control-label" th:text="#{crop.variety}"></label> 
+												<div class="col-sm-12">
+													<select	required="required" th:field="*{variety}" onchange="varitycng()" name="cropTaskMap.varity"
+														ng-model="cropdtl.variety"
+														ng-options="x.variety_id as x.variety for x in varities"
+														class="form-control" id="city">
+														<option value="">--<span th:text="#{choose.all}">--</span></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="line line-dashed b-b line-lg pull-in"></div>
+							<div class="form-group">
+								<div class="row">
+									<div><input type="hidden" name="farmer.id" id="farmer_id" value=""/></div>
+									<div class="col-sm-5">
+										<label class="col-sm-12 control-label"
+											th:text="#{crop.farmer.mobileNo}"></label>
+										<div class="col-sm-12">
+											<input type="text" th:field="*{farmer.mobileNo}" value="" id="crop_farmer_mobileNo"
+												name="crop.farmer.mobileNo" class="form-control" placeholder="Search cities..." autocomplete="off">
+										</div>
+									</div>
+									<div class="col-sm-2">
+										<label class="col-sm-12 control-label">&nbsp;</label>
+										<div class="col-sm-12"><span>Or</span></div>
+									</div>
+									<div class="col-sm-5">
+										<label class="col-sm-12 control-label"
+											th:text="#{crop.farmer.nid}"></label>
+										<div class="col-sm-12">
+											<input type="text" th:field="*{farmer.nid}" value="" id="crop_farmer_nid"
+												name="crop.farmer.nid" class="form-control" placeholder="Search cities..." autocomplete="off">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="well clearFix"></div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-12">
+								        <div class="col-sm-12">
+								        	<span id="show-register" class="form-control alert alert-block alert-secondary" th:text="#{account.information.required}"></span>
+								        </div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-6">
+										<label class="col-sm-12 control-label"
+											th:text="#{crop.farmer.landOwner}"></label>
+										<div class="col-sm-12">
+											<div class="radio">
+												<label class="i-checks"> <input type="radio"
+													th:value="Yes" th:field="*{landOwner}"></input> <i></i>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+													th:text="#{crop.farmer.owner.self}"></span>
+												</label>
+											</div>
+											<div class="radio">
+												<label class="i-checks"> <input type="radio"
+													th:value="No" th:field="*{landOwner}"></input> <i></i>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+													th:text="#{crop.farmer.owner.lease}"></span>
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<label class="col-sm-12 control-label"
+											th:text="#{crop.farmer.landDagNo}"></label>
+										<div class="col-sm-12">
+											<input type="text" th:field="*{landDagNo}" value="" id="crop.farmer.landDagNo"
+												name="crop.farmer.landDagNo" class="form-control">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-6">
+										<label for="crop_farmer_name" class="col-sm-12 control-label"
+											th:text="#{crop.cropUnit}"></label>
+										<div class="controls col-sm-12">
+											<select th:field="*{cropUnit}" name="crop.cropUnit"  id="country" class="form-control"
+												ng-required="true" required="required">
+												<option value="0" class="" selected="selected"
+													th:text="#{choose.option}"></option>
+												<option th:each="unit : ${T(com.cropaccounting.util.UnitEnum).values()}" th:value="${unit.id()}" th:utext="${unit.unitsName()}"> 
+											</select> <span class="help-inline"></span>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<label class="col-sm-12 control-label"
+											th:text="#{crop.cropLandQuantity}"></label>
+										<div class="col-sm-12">
+											<input type="text" th:field="*{cropLandQuantity}" value="" id="crop.cropLandQuantity"
+												name="crop.cropLandQuantity" class="form-control">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="row">
+									<div class="col-sm-6">
+										<label class="col-sm-12 control-label"
+											th:text="#{crop.startDate}"></label>
+										<div class="col-sm-12">
+											<input type="text" th:field="*{startDateString}" value="" id="datepicker" name="crop.startDate" class="form-control">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-actions">
+								<button type="submit" class="btn btn-sm btn-primary" th:text="#{crop.list.save}"></button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$.fn.datepicker.defaults.format = "dd-mm-yyyy";
+	$('#datepicker').datepicker();
+	/* $(function () {
+        $('#datetimepicker2').datepicker({
+            format: 'dd-mm-yyyy'
+        });
+    }); */
+	function displayResult(item) {
+		console.log('selected--' + item);
+		$('#farmer_id').val(item.value);
+		$('.alert').show().html('' + [[#{search.farmer.name}]] + ' : <strong>' + item.text + '</strong>');
+	}
+	
+	$('#crop_farmer_nid').typeahead({
+		ajax: {
+            url: '/app/searchFarmerNID',
+            method: 'get',
+            triggerLength: 13
+        },
+        grepper: function(data){
+            var that = this;
+            console.log('grepper--' + data);
+            if (data == undefined || data == '' || data.length == 0) {
+        		console.log('')
+        		$('#show-register').show().html('<span>' + [[#{no.profile.found}]] + ' ' + 
+            			'<a class="btn btn-sm btn-primary" href="/app/farmerRegistration" class="btn">' 
+            			+ '<i class="fa fa-plus"></i>Register</a></span>');
+            }
+            if(data && data.length){
+                items = $.grep(data, function(item){
+                    return that.matcher(item['nid']);
+                });
+                return items;
+            } 
+            return null;
+        },
+        onSelect: displayResult
+    });
+	
+	$('#crop_farmer_mobileNo').typeahead({
+		ajax: {
+            url: '/app/searchFarmerMobile',
+            triggerLength: 1
+        },
+        grepper: function(data){
+            var that = this;
+            console.log('grepper--' + data);
+            if (data == undefined || data == '' || data.length == 0) {
+        		console.log('data')
+            	$('#show-register').show().html('<span>' + [[#{no.profile.found}]] + ' ' + 
+            			'<a class="btn btn-sm btn-primary" href="/app/farmerRegistration" class="btn">' 
+            			+ '<i class="fa fa-plus"></i>Register</a></span>');
+            }
+            if(data && data.length) {
+                items = $.grep(data, function(item){
+                    return that.matcher(item['mobileNo']);
+                });
+                return items;
+            }
+            return null;
+        },
+        onSelect: displayResult
+    });
+    var cropList = [[${crops}]];
+    var theList = [[${cropActivityList}]];
+    var typeList = [[${types}]];
+    /*
+var a={1:"১",2:"২",3:"৩",4:"৪",5:"৫",6:"৬",7:"৭",8:"৮",9:"৯",0:"০"};
+var currentLangCode = '${play.i18n.Lang.get()}';
+  $( function() {
+    //$( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' });
+    $( "#datepicker" ).datepicker({"Name":"bn-BD","closeText":"Close","prevText":"Prev","nextText":"Next",
+		"currentText":"Today","monthNames":["জানুয়ারী","ফেব্রুয়ারী","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগস্ট","সেপ্টেম্বর","অক্টোবর","নভেম্বর","ডিসেম্বর",""],
+		"monthNamesShort":["জানু.","ফেব্রু.","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগ.","সেপ্টে.","অক্টো.","নভে.","ডিসে.",""],
+		"dayNames":["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"],
+		"dayNamesShort":["রবি.","সোম.","মঙ্গল.","বুধ.","বৃহস্পতি.","শুক্র.","শনি."],
+		"dayNamesMin":["র","স","ম","ব","ব","শ","শ"],
+		"dateFormat":"dd-mm-yy","firstDay":1,"isRTL":false,
+		beforeShow: function () {
+			
+		},
+		onChangeMonthYear: function(year, month, inst) { 
+		   //some function to do on month or year change 		   
+		},
+		afterShow: function () {
+			console.log('fff');
+		}		
+		});
+  } );	
+ $('.selector').datepicker({
+   beforeShow: function(date) { 
+       setTimeout(function() {
+            if(currentLangCode=='bn')
+			{
+				$('.ui-state-default').each(function() {
+				var day = $(this).html();
+				if(day != undefined && parseInt(day)>-1) {
+								day =  day.replace(/\d/g,function(day){return a[day]});
+								console.log("day::"+day);
+								// Check if there's a url defined for the day
+								$(this).html( day );
+							}
+				//repeat this for each number
+			});
+			}
+       }, 50); // TD content is already rendered 
+   },
+}); 
+*/
+var myApp = angular.module("myApp", []);
+
+myApp.factory("CustomerService", ['$filter', 
+      function($filter){
+		var types = [];
+		var crops = [];
+		var varities = [];
+        var service = {}; 
+        var i = 0;    
+        var cropList = [[${crops}]];
+        var typeList = [[${types}]];
+        var varietyList = [[${varieties}]];
+        console.log(varietyList);
+        console.log(cropList);
+		
+		for(var i = 0; i < typeList.length; i++)
+		{
+			types[i] = {'type':typeList[i]};
+		}
+		
+		i = 0;
+		for(var i =0; i < cropList.length; i++)
+		{
+			crops[i] = {'name':cropList[i][1],'type':cropList[i][0],'id':cropList[i][2]};
+		}
+		
+		i = 0;
+		for(var i = 0; i < varietyList.length; i++)
+		{
+			console.log(varietyList[i].name);
+			varities[i] = {'crop_id':varietyList[i].crop_id, 'variety_id':varietyList[i].id, 'variety':varietyList[i].name};
+		}
+		
+        service.getType = function(){    
+            return types;
+        };
+		service.getTypeCrop = function(){
+            var cropList = crops;//($filter('filter')(crops, {type: type}));
+             $("#createcrop").removeAttr("disabled");
+            return cropList;
+        };
+		service.getCropVarity = function(crop) {
+			console.log('crop' + crop + ' cv::' + varities[0].crop_id)
+            var varityList = ($filter('filter')(varities, {crop_id: crop}));
+            return varityList;
+        };
+		
+        return service;       
+    }]);
+    
+myApp.controller('dropdownCtrl', ['$scope','CustomerService', 
+   function($scope, CustomerService) {
+	
+	$scope.createcrop = {id:''};
+	$scope.createcroptype = {type:''};
+    $scope.cropdtl ={
+        Name:'', 
+        type:'', 
+        crop: '', 
+        variety: ''
+    };
+	
+    $scope.types = CustomerService.getType();
+    $scope.crops = CustomerService.getTypeCrop();
+
+    $scope.getTypeCrops = function(){
+		$scope.createcroptype = {type:$scope.cropdtl.type};
+        $scope.crops = CustomerService.getTypeCrop($scope.cropdtl.type);
+        $scope.varities =[];
+    };
+
+    $scope.getVarities = function(){
+		$scope.createcrop = {id:$scope.cropdtl.crop}		
+	    $scope.varities = CustomerService.getCropVarity($scope.cropdtl.crop);
+    }
+    
+}]);
+
+function convertToInt(id) {
+		console.log(id);
+	return parseInt(id, 10);
+}
+
+/*
+module.directive('convertToNumber', function() {
+	return {
+		require: 'ngModel',
+		link: function(scope, element, attrs, ngModel) {
+			ngModel.$parsers.push(function(val) {
+			  return val != null ? parseInt(val, 10) : null;
+			});
+			ngModel.$formatters.push(function(val) {
+			  return val != null ? '' + val : null;
+			});
+		}
+	};
+});
+*/
+/*]]>*/
+</script>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+//AJAX call for autocomplete 
+$(document).ready(function(){
+	/*
+	$("#search-box").keyup(function(){
+		console.log('searching');
+		$.ajax({
+		type: "POST",
+		url: "readCountry.php",
+		data:'keyword='+$(this).val(),
+		beforeSend: function(){
+			$("#search-box").css("background","#FFF url(LoaderIcon.gif) no-repeat 165px");
+		},
+		success: function(data){
+			$("#suggesstion-box").show();
+			$("#suggesstion-box").html(data);
+			$("#search-box").css("background","#FFF");
+		}
+		});
+	});
+	*/
+	/*
+	$('#search-box').typeahead({
+        source: function (query, result) {
+            $.ajax({
+                url: "server.php",
+				data: 'query=' + query,            
+                dataType: "json",
+                type: "POST",
+                success: function (data) {
+					result($.map(data, function (item) {
+						return item;
+                    }));
+                }
+            });
+        }
+    });*/
+});
+/*]]>*/
+</script>
+
+</body>
+</html>

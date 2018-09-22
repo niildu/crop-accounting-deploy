@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'createcrop')}">
+<body>
+	<div class="wrapper-md" ng-controller="FormDemoCtrl">
+		<div class="row">
+			<div class="col-sm-9">
+				<div class="panel panel-default">
+					<div class="panel-heading font-bold">Crop description</div>
+					<div class="panel-body">
+						<form th:method="POST" th:action="@{/cropmanagement/submitCrop}"
+							class="form-horizontal">
+
+							<input type="hidden" name="cropId"
+								th:value="${crop != null} ? ${crop[0]} : ''" /> <input
+								type="hidden" name="cropType"
+								th:value="${cropType.isPresent()} ? ${cropType.get()} : ''" />
+
+							<div class="control-group">
+								<label for="crop_name" class="">নাম</label>
+								<div class="controls ">
+									<input type="text" required="required"
+										th:text="${crop != null} ? 'disabled' : ''" name="cropName"
+										class="form-control" id="crop_name"
+										th:value="${crop != null} ? ${crop[2]} : ''"
+										place-holder="${crop != null} ? ${crop[2]} : ''">
+									<span class="help-inline"></span>
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label for="cropType" class="">জাত</label>
+								<div class="controls ">
+									<input type="text" name="varityName" class="form-control"
+										id="cropType"> <span class="help-inline"></span>
+								</div>
+							</div>
+							
+							<div class="control-group">
+								<label for="cropType" class="" th:text="#{crop.type}"></label>
+								<div class="controls ">
+									<select name="cropType" required="required" class="form-control">
+										<option value="" class="" selected="selected"
+											th:text="#{choose.option}"></option>
+										<option th:each="typeName, iter : ${T(com.cropaccounting.util.CropTypeEnum).values()}" th:value="${typeName}" th:utext="${typeName}"> 
+									</select> <span class="help-inline"></span>
+								</div>
+							</div>
+							<div class="well clearFix"></div>
+
+							<div class="form-actions">
+								<button type="submit" class="btn btn-sm btn-primary"
+									th:text="#{crop.save}"></button>
+								<button type="reset" class="btn" th:text="#{Reset}"></button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
