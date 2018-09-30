@@ -51,8 +51,8 @@
                   <div class="clx-breadcrumb-wrap col-md-411">
                       <div class="clx-breadcrumbs">
                         <ol class="breadcrumb ">
-                          <li><a href="#" th:text="#{application.breadcrumb.dashboard}"></a></li>
-                          <li><a href="#" th:text="#{CropManagement}"></a></li>
+                          <li><a href="/home" th:text="#{application.breadcrumb.dashboard}"></a></li>
+                          <li><a href="/home" th:text="#{CropManagement}"></a></li>
                           	<li>
 								<a th:if="${#httpServletRequest.requestURI == '/cropmanagement/createcropcalendar'}" 
 									class="active" th:href="@{/cropmanagement/createcropcalendar}" th:text="#{create.crop.calendar}">

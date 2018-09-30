@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'farmerlist')}">
+<body>
+
+	<div class="wrapper-sm">
+		<div>
+			<div>
+				<div class="row">
+					<div class="col-sm-9">
+						<div class="panel panel-default">
+							<div class="panel-heading font-bold" th:text="#{activity.add}"></div>
+							<div class="panel-body">
+							<table border="1">
+								<thead>
+									<tr>
+										<th th:text="#{msg.id}" />
+										<th th:text="#{msg.name}" />
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="book, iStat : ${data}"
+										th:style="${iStat.odd}? 'font-weight: bold;'"
+										th:alt-title="${iStat.even}? 'even' : 'odd'">
+										<td th:text="${book.id}" />
+										<td th:text="${book.name}" />
+									</tr>
+								</tbody>
+							</table>
+							<!--<div th:if="${data.totalPages > 0}" class="pagination"
+								th:each="pageNumber : ${pageNumbers}">
+								<a th:href="@{/listBooks(size=${bookPage.size}, page=${pageNumber})}"
+									th:text=${pageNumber}
+									th:class="${pageNumber==bookPage.number + 1} ? active"></a>
+							</div>
+							-->
+							<!-- <ul class="nav nav-pills">
+								<li class="nav-item" th:each="i: ${#numbers.sequence(0,data.totalPages-1)}">
+									<a th:href="@{/eo/farmerlist(page=${i})}" th:text="${i}" class="nav-link"></a>
+								</li>
+							</ul> -->
+							<ul th:replace="fragments/pagination :: pagination"></ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

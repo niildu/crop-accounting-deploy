@@ -42,7 +42,7 @@
 									<select name="cropType" required="required" class="form-control">
 										<option value="" class="" selected="selected"
 											th:text="#{choose.option}"></option>
-										<option th:each="typeName, iter : ${T(com.cropaccounting.util.CropTypeEnum).values()}" th:value="${typeName}" th:utext="${typeName}"> 
+										<option th:each="cropType : ${T(com.cropaccounting.util.CropTypeEnum).values()}" th:value="${cropType.id()}" th:utext="${cropType.typeName()}"> 
 									</select> <span class="help-inline"></span>
 								</div>
 							</div>

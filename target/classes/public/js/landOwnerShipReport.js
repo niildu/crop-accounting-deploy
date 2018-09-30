@@ -1,5 +1,5 @@
 function drawLandOwnerShipChart(data, config) {
-    var salesByRegionChart = Highcharts.chart('salesByRegion', {
+    var salesByRegionChart = Highcharts.chart('landownership', {
         chart: {
             type: 'pie',
             margin: 40,

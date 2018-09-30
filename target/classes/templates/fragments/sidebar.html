@@ -86,7 +86,15 @@
 				th:class="${#httpServletRequest.requestURI == '/eo/incomelist' ? 'nav-link active' : 'nav-link'}"
 				th:href="@{/eo/incomelist}"> <span
 				th:text="#{expenditure.estimate.all}"></span>
-		</a>
+			</a>
+		</li>
+		
+		<li class="nav-item">
+			<a th:if="${#authorization.expression('hasRole(''EO'')')}" 
+				th:class="${#httpServletRequest.requestURI == '/eo/farmerlist' ? 'nav-link active' : 'nav-link'}"
+				th:href="@{/eo/farmerlist}"> <span
+				th:text="FarmerList"></span>
+			</a>
 		</li>
 		<!--
 		<li><a

@@ -1,0 +1,5 @@
+<ul th:fragment="pagination" class="nav nav-pills">
+	<li class="nav-item" th:each="i: ${#numbers.sequence(0,data.totalPages-1)}">
+		<a th:href="@{/eo/farmerlist(page=${i})}" th:text="${i}" class="nav-link"></a>
+	</li>
+</ul>

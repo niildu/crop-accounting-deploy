@@ -17,4 +17,6 @@ public interface CropIncomeListRepository extends CrudRepository<CropIncomeList,
 	default Optional<CropIncomeList> findOne(@Param("crop") long crop, @Param("varity") long varity) {
 		return find(crop, varity).stream().findFirst();
 	}
+	
+	public Optional<CropIncomeList> findById(@Param("id") long id);
 }

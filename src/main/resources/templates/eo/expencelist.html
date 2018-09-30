@@ -23,9 +23,8 @@
 										<tr th:each="expence, iter : ${cropExpences}">
 											<th scope="row" th:text="${iter.index + 1}"></th>
 											<td th:text="${expence.type}"></td>
-											<td th:text="${expence.crop}"></td>
-											<td th:text="${expence.varity}"></td>
-
+											<td th:text="${crops.get('' + expence.crop).stream().findFirst().orElse('').name}"></td>
+											<td th:text="${varieties.get('' + expence.varity).stream().findFirst().orElse('').name}"></td> 
 											<td><a
 												class="btn btn-mini btn-warning"
 												th:href="@{/eo/createAreaTaskExpenditure?id=} + ${expence.id}"><i
@@ -48,8 +47,8 @@
 										<tr th:each="expence, iter : ${areaExpences}">
 											<th scope="row" th:text="${iter.index + 1}"></th>
 											<td th:text="${expence.type}"></td>
-											<td th:text="${expence.crop}"></td>
-											<td th:text="${expence.varity}"></td>
+											<td th:text="${crops.get('' + expence.crop).stream().findFirst().orElse('').name}"></td>
+											<td th:text="${varieties.get('' + expence.varity).stream().findFirst().orElse('').name}"></td>
 
 											<td><a
 												class="btn btn-mini btn-warning"

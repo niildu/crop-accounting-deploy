@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'laborcomparison')}">
+
+<body>
+	<script src="../js/highcharts.js"></script>
+  	<script src="../js/highcharts-3d.js"></script>
+   <div class="page-container">
+       <div class="page-content-wrapper">
+           <div class="page-head" style="background-color:#eff3f8;padding-top:40px">
+               <div class="container">
+               		<div class="row" style="margin-bottom:30px">
+                       <div class="col-md-12" style="margin-top:20px">
+                           <div id="comparison" style="width:100%; height:300px;"></div>
+                       </div>
+                   </div>
+                   <div th:replace="fragments/dashboardlink :: dashboardlink"></div>
+               </div>
+           </div>
+       </div>
+   </div>
+   <script th:src="@{../js/expenceComparisonReport.js}"></script>
+   <script th:inline="javascript">
+        /*<![CDATA[*/
+   var comparisonConfig = {
+				"heading" : [[#{report.expence.comparison.heading}]],
+				"task" : [[#{report.expence.comparison.task}]],
+				"expence": [[#{report.expence.comparison.expence}]],
+				"expencecountry" : [[#{report.expence.comparison.type.country}]],
+				"expencearea" : [[#{report.expence.comparison.type.area}]]
+			}
+			$.ajax({ 
+		        type: 'GET', 
+		        url: '/report/labourExpenceComparison', 
+		        data: { get_param: 'value' }, 
+		        success: function (data) {
+		        	drawComparisonChart(data, comparisonConfig);
+		            var names = data;
+		            $('#cand').html(data);
+		        }
+		    });
+		/*]]>*/
+    </script>  
+</body>
+</html>

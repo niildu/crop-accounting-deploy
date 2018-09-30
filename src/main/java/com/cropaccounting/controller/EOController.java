@@ -4,13 +4,19 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cropaccounting.models.CropActivityItem;
@@ -20,6 +26,7 @@ import com.cropaccounting.models.CropIncomeList;
 import com.cropaccounting.models.CropTaskMap;
 import com.cropaccounting.models.Crops;
 import com.cropaccounting.models.ExpenceItemValue;
+import com.cropaccounting.models.Farmer;
 import com.cropaccounting.models.IncomeItemValue;
 import com.cropaccounting.models.Varieties;
 import com.cropaccounting.models.area.AreaCropExpence;
@@ -30,11 +37,14 @@ import com.cropaccounting.models.area.SubDistrict;
 import com.cropaccounting.service.AreaService;
 import com.cropaccounting.service.CropAccountingService;
 import com.cropaccounting.service.EOService;
+import com.cropaccounting.util.CropTypeEnum;
 
 @Controller
 public class EOController {
 	private static final String REPLACE_NUMBER = "number:";
-	
+	private static int currentPage = 1;
+	private static int pageSize = 5;
+
 	@Autowired
 	private AreaService areaService;
 	
@@ -46,6 +56,9 @@ public class EOController {
 	
 	@RequestMapping("/eo/expencelist")
 	public void expencelist(Model model) {
+		model.addAttribute("crops", cropAccountingService.getCropsList().stream().collect(Collectors.groupingBy(crop -> "" + crop.getId())));
+		model.addAttribute("varieties", cropAccountingService.getVarietyList().stream()
+				.collect(Collectors.groupingBy(variety -> "" + variety.getId())));
 		model.addAttribute("cropTaskMapList", cropAccountingService.getCropTaskMapList());
 		model.addAttribute("expenceItemList", cropAccountingService.getExpenceItemList());
 		model.addAttribute("areaExpences", eoService.getAreaCropExpenceList());
@@ -190,6 +203,7 @@ public class EOController {
 	
 	@RequestMapping("/eo/areacropearning")
 	public void areacropearning(Optional<Long> id, Model model) {
+		Optional<CropIncomeList> cropIncomeList = cropAccountingService.getCropIncomeListById(id.isPresent() ? id.get() : 0l);
 		model.addAttribute("cropTaskMap", cropAccountingService.getCropIncomeListById(id.isPresent() ? id.get() : 0l));
 		model.addAttribute("incomeItemList", cropAccountingService.getExpenceItemList());
 		//model.addAttribute("cropTaskMap", eoService.getAreaCropExpenceById(id.isPresent() ? id.get() : 0l));
@@ -341,5 +355,23 @@ public class EOController {
 		model.addAttribute("areaIncomes", eoService.getAreaCropIncomeList());
 		model.addAttribute("cropIncomes", cropAccountingService.getCropIncomeLists());
 		return "redirect:/eo/incomelist";
+	}
+	
+	@RequestMapping(value = "/eo/farmerlist", method = RequestMethod.GET)
+	public void listBooks(Model model, @RequestParam(defaultValue = "0") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+//		page.ifPresent(p -> currentPage = p);
+//		size.ifPresent(s -> pageSize = s);
+//		Page<Farmer> bookPage = eoService.findPaginated(PageRequest.of(currentPage - 1, pageSize));
+//		model.addAttribute("bookPage", bookPage);
+//		int totalPages = bookPage.getTotalPages();
+//		if (totalPages > 0) {
+//			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+//					.boxed()
+//					.collect(Collectors.toList());
+//			model.addAttribute("pageNumbers", pageNumbers);
+//		}
+		model.addAttribute("data", eoService.findPaginated(PageRequest.of(page.isPresent() ? page.get().intValue() : 0,4)));
+        model.addAttribute("currentPage",page);
+		//return "/eo/farmerlist";
 	}
 }

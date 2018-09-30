@@ -1,0 +1,34 @@
+<div th:fragment="dashboardlink" class="dashboard-icon-bar">
+<style>
+body {margin:0;}
+
+.dashboard-icon-bar {
+    width: 100%;
+    background-color: #555;
+    overflow: auto;
+}
+
+.dashboard-icon-bar a {
+    float: left;
+    width: 20%;
+    text-align: center;
+    padding: 12px 0;
+    transition: all 0.3s ease;
+    color: white;
+    font-size: 15px;
+}
+
+.dashboard-icon-bar a:hover {
+    background-color: #000;
+}
+
+.active {
+    background-color: #4CAF50;
+}
+</style>
+  <a class="active" th:href="@{/home}"><i class="fa fa-home"></i>Home</a> 
+  <a th:href="@{/reports/cropvsland}"><i class="fa fa-search"></i> Crop land</a> 
+  <a th:href="@{/reports/laborcomparison}"><i class="fa fa-envelope"></i> labor comparison</a> 
+  <a th:href="@{/reports/landownership}"><i class="fa fa-globe"></i>Land ownership</a>
+  <a th:href="@{/reports/production}"><i class="fa fa-trash"></i>Production</a> 
+</div>

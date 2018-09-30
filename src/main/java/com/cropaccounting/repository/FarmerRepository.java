@@ -2,13 +2,15 @@ package com.cropaccounting.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.cropaccounting.models.Farmer;
 
-public interface FarmerRepository extends CrudRepository<Farmer, Long> {
+public interface FarmerRepository extends PagingAndSortingRepository<Farmer, Long> {
 	
 	@Query("SELECT f FROM Farmer f WHERE f.nid = :nid")
 	public Farmer findByNID(@Param("nid") String nid);
@@ -18,4 +20,7 @@ public interface FarmerRepository extends CrudRepository<Farmer, Long> {
 	
 	@Query("SELECT f FROM Farmer f WHERE f.mobileNo like %:mobileNo")
 	public List<Farmer> searchByMobile(@Param("mobileNo") String mobileNo);
+	
+	@Query("SELECT f FROM Farmer f WHERE f.mobileNo like %:mobileNo")
+	public List<Farmer> searchByMobile(@Param("mobileNo") String mobileNo, Pageable pageable);
 }

@@ -122,7 +122,7 @@ public class CropAccountingController {
 			Crops portalcrops = new Crops();
 			portalcrops.setName(cropName);
 			if (cropType.isPresent())
-				portalcrops.setType(cropType.get());
+				portalcrops.setType(cropType.get().replace(",", ""));
 			cropAccountingService.saveCrops(portalcrops);
 
 			Varieties protalvirieties = new Varieties();

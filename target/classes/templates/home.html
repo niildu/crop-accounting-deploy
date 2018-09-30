@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
 
@@ -14,58 +13,27 @@
                            <h5 th:text="#{report.dashboard}"></h5>
                        </div>
                    </div>
-               		<div class="row" style="margin-bottom:30px">
-                       <div class="col-md-12" style="margin-top:20px">
-                           <div id="comparison" style="width:100%; height:300px;"></div>
-                       </div>
-                   </div>
-                   <div class="row" style="margin-bottom:30px">
-                       <div class="col-md-12" style="margin-top:20px">
-                           <div id="cropVsLand" style="width:100%; height:300px;"></div>
-                       </div>
-                   </div>
+ 
                    <div class="row" style="margin-bottom:30px">
                        <div class="col-md-12" style="margin-top:20px">
                            <div id="salesByType" style="width:100%; height:300px;"></div>
                        </div>
                    </div>
-                   <div class="row" style="margin-bottom:30px">
+                   
+                   <div th:replace="fragments/dashboardlink :: dashboardlink"></div>
+                   <!-- <div class="row" style="margin-bottom:30px">
                        <div class="col-md-12" style="margin-top:20px">
                            <div id="salesByRegion" style="width:100%; height:300px;"></div>
                        </div>
-                   </div>
-                   <div class="row" style="margin-bottom:30px">
-                       <div class="col-md-12" style="margin-top:20px">
-                           <div id="production" style="width:100%; height:300px;"></div>
-                       </div>
-                   </div>
+                   </div> -->
                </div>
            </div>
        </div>
    </div>
-   <script th:src="@{/js/expenceComparisonReport.js}"></script>
-   
-   <script th:src="@{/js/cropVsLandChart.js}"></script>
-   <script th:src="@{/js/landOwnerShipReport.js}"></script>
-   <script th:src="@{/js/productionChart.js}"></script>
    <script th:src="@{/js/monthWiseRegistrationReport.js}"></script>
    
    <script th:inline="javascript">
         /*<![CDATA[*/
-        	console.log([[${production}]])
-        	var cropvslandConfig = {
-        		"heading" : [[#{report.cropvsland.heading}]]	
-        	}
-        	$.ajax({ 
-		        type: 'GET', 
-		        url: '/report/cropVsLand', 
-		        data: { get_param: 'value' }, 
-		        success: function (data) { 
-		            drawCropVsLandChart(data, cropvslandConfig);
-		            $('#cand').html(data);
-		        }
-		    });
-        	
         	var monthWiseRegistrationConfig = {
 					"heading" : [[#{report.crop.registration.heading}]],
 					"yaxis" : [[#{report.crop.registration.cropcount}]],
@@ -96,50 +64,6 @@
 		        }
 		    });
         	
-        	$.ajax({ 
-		        type: 'GET', 
-		        url: '/report/production', 
-		        data: { get_param: 'value' }, 
-		        success: function (data) {
-		        	//console.log(data);
-		        	drawMonthWiseProductionChart(data, monthWiseRegistrationConfig);
-		            //var names = data;
-		            //$('#cand').html(data);
-		        }
-		    });
-			
-        	var comparisonConfig = {
-					"heading" : [[#{report.expence.comparison.heading}]],
-					"task" : [[#{report.expence.comparison.task}]],
-					"expence": [[#{report.expence.comparison.expence}]],
-					"expencecountry" : [[#{report.expence.comparison.type.country}]],
-					"expencearea" : [[#{report.expence.comparison.type.area}]]
-			}
-			$.ajax({ 
-		        type: 'GET', 
-		        url: '/report/labourExpenceComparison', 
-		        data: { get_param: 'value' }, 
-		        success: function (data) {
-		        	drawComparisonChart(data, comparisonConfig);
-		            var names = data;
-		            $('#cand').html(data);
-		        }
-		    });
-			
-			var landOwnershipConfig = {
-					"heading" : [[#{farmer.registration}]]
-			}
-			$.ajax({ 
-		        type: 'GET', 
-		        url: '/report/landOwnerShip', 
-		        data: { get_param: 'value' }, 
-		        success: function (data) {
-		        	drawLandOwnerShipChart(data, landOwnershipConfig);
-		            var names = data;
-		            $('#cand').html(data);
-		        }
-		    });
-			
 			function inArrayItem(needle, haystack) {
         	    var length = haystack.length;
         	    for(var i = 0; i < length; i++) {

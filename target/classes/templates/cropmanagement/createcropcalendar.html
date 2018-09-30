@@ -31,16 +31,6 @@ a.disabled {
 								<div ng-app="myApp" ng-controller="dropdownCtrl">
 									<label><strong><span th:text="#{crop.task.list}"></span></strong></label>
 									<div class="row">
-										<!-- <div class="col-sm-6">
-											<div class="control-group">
-												<label for="country" class="control-label"
-													th:text="#{crop.name}"></label> 
-												<select	name="cropId" class="form-control" ng-required="true">
-													<option value="">-- <span th:text="#{choose.all}">--</span></option>
-													<option th:each="crop : ${cropList}" th:value="${crop.cropId + '-' + crop.varietyId}" th:utext="${crop.cropName + '-' + crop.varietyName}"/>
-												</select>
-											</div>
-										</div> -->
 										<div class="col-sm-3">
 											<div class="control-group">
 												<label for="state" class="control-label"

@@ -24,6 +24,7 @@ public class Crops {
 	//@NotNull
 	@Column(name = "name")
 	private String name;	
+	@NotNull
 	@Column(name = "type")
 	private String type;	
 	@Column(name = "image")

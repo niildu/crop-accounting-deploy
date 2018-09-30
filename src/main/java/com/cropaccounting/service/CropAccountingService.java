@@ -92,6 +92,7 @@ public class CropAccountingService {
 		return em.createNativeQuery("SELECT a.crop_id, a.name, a.id FROM varieties a where crop_id is not null").getResultList();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Varieties> getVarietyList() {
 		return em.createNativeQuery("SELECT a.crop_id, a.name, a.id FROM varieties a where crop_id is not null", Varieties.class).getResultList();
 	}

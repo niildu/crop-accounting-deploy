@@ -30,7 +30,6 @@ public class DefaultController {
 	
 	@GetMapping("/home")
 	public String dashboard(Model model) {
-		model.addAttribute("production", repo.getCropProduction());
 		return "home";
 	}
 
@@ -58,5 +57,25 @@ public class DefaultController {
 	@GetMapping("/403")
 	public String error403() {
 		return "/errors/403";
+	}
+	
+	@GetMapping("/reports/cropvsland")
+	public String cropvsland(Model model) {
+		return "/reports/cropvsland";
+	}
+	
+	@GetMapping("/reports/laborcomparison")
+	public String laborcomparison(Model model) {
+		return "/reports/laborcomparison";
+	}
+	
+	@GetMapping("/reports/landownership")
+	public String landownership(Model model) {
+		return "/reports/landownership";
+	}
+	
+	@GetMapping("/reports/production")
+	public String production(Model model) {
+		return "/reports/production";
 	}
 }

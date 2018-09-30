@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'cropvsland')}">
+<body>
+	<script src="../js/highcharts.js"></script>
+  	<script src="../js/highcharts-3d.js"></script>
+   <div class="page-container">
+       <div class="page-content-wrapper">
+           <div class="page-head" style="background-color:#eff3f8;padding-top:40px">
+               <div class="container">
+               		<div class="row" style="margin-bottom:30px">
+                       <div class="col-md-12" style="margin-top:20px">
+                           <div id="cropVsLand" style="width:100%; height:300px;"></div>
+                       </div>
+                   </div>
+                   <div th:replace="fragments/dashboardlink :: dashboardlink"></div>
+               </div>
+           </div>
+       </div>
+   </div>
+   <script th:src="@{../js/cropVsLandChart.js}"></script>
+   <script th:inline="javascript">
+        /*<![CDATA[*/
+   			var cropvslandConfig = {
+        		"heading" : [[#{report.cropvsland.heading}]]	
+        	}
+        	$.ajax({ 
+		        type: 'GET', 
+		        url: '/report/cropVsLand', 
+		        data: { get_param: 'value' }, 
+		        success: function (data) { 
+		            drawCropVsLandChart(data, cropvslandConfig);
+		            $('#cand').html(data);
+		        }
+		    });
+		/*]]>*/
+    </script>  
+</body>
+</html>
