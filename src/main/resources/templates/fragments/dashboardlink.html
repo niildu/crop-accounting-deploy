@@ -26,9 +26,14 @@ body {margin:0;}
     background-color: #4CAF50;
 }
 </style>
-  <a class="active" th:href="@{/home}"><i class="fa fa-home"></i>Home</a> 
-  <a th:href="@{/reports/cropvsland}"><i class="fa fa-search"></i> Crop land</a> 
-  <a th:href="@{/reports/laborcomparison}"><i class="fa fa-envelope"></i> labor comparison</a> 
-  <a th:href="@{/reports/landownership}"><i class="fa fa-globe"></i>Land ownership</a>
-  <a th:href="@{/reports/production}"><i class="fa fa-trash"></i>Production</a> 
+  <a th:class="${#httpServletRequest.requestURI == '/home' ? 'active' : ''}" th:href="@{/home}">
+  	<i class="fa"><img th:src="@{/img/crop-6.png}" height="30" width="30" alt=""/></i>Home</a> 
+  <a th:class="${#httpServletRequest.requestURI == '/reports/cropvsland' ? 'active' : ''}" th:href="@{/reports/cropvsland}">
+  	<i class="fa"><img th:src="@{/img/crop-3.png}" height="30" width="30" alt=""/></i>Crop land</a> 
+  <a th:class="${#httpServletRequest.requestURI == '/reports/laborcomparison' ? 'active' : ''}" th:href="@{/reports/laborcomparison}">
+	<i class="fa"><img th:src="@{/img/crop-4.png}" height="30" width="30" alt=""/></i>labor comparison</a> 
+  <a th:class="${#httpServletRequest.requestURI == '/reports/landownership' ? 'active' : ''}" th:href="@{/reports/landownership}">
+	<i class="fa"><img th:src="@{/img/crop-5.png}" height="30" width="30" alt=""/></i>Land ownership</a>
+  <a th:class="${#httpServletRequest.requestURI == '/reports/production' ? 'active' : ''}" th:href="@{/reports/production}">
+	<i class="fa"><img th:src="@{/img/crop-2.png}" height="30" width="30" alt=""/></i>Production</a> 
 </div>
