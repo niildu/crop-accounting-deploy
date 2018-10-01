@@ -1,0 +1,2 @@
+[01-Oct-2018]
+* [WA] Adding this file to project to log changes.
