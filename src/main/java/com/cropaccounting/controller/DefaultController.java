@@ -61,21 +61,21 @@ public class DefaultController {
 	
 	@GetMapping("/reports/cropvsland")
 	public String cropvsland(Model model) {
-		return "/reports/cropvsland";
+		return "reports/cropvsland";
 	}
 	
 	@GetMapping("/reports/laborcomparison")
 	public String laborcomparison(Model model) {
-		return "/reports/laborcomparison";
+		return "reports/laborcomparison";
 	}
 	
-	@GetMapping("/reports/landownership")
+	@GetMapping("reports/landownership")
 	public String landownership(Model model) {
-		return "/reports/landownership";
+		return "reports/landownership";
 	}
 	
 	@GetMapping("/reports/production")
 	public String production(Model model) {
-		return "/reports/production";
+		return "reports/production";
 	}
 }
