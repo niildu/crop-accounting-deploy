@@ -48,6 +48,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			//.antMatchers("/cropmanagement/**").access("hasRole('ADMIN')")
 			.antMatchers("/cropmanagement/**").access("hasAnyRole('ADMIN','EO')")
 			.antMatchers("/app/**").hasRole("USER")
+			.antMatchers("/reports/**").hasRole("USER")
 			.antMatchers("/eo/**").hasRole("EO")
 			.antMatchers("/webjars/**").permitAll()
 			.anyRequest().authenticated()
