@@ -6,9 +6,11 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @MappedSuperclass
 @Data
+@Accessors(chain = true)
 public class IncomeBase {
 	@Id
 	@GeneratedValue

@@ -1,9 +1,11 @@
 package com.cropaccounting.repository;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,20 +146,24 @@ public class ReportDataRepository {
 
 	private void setCropExpence(ReportExpenceCompareDetails cropExpence,
 			List<ReportExpenceCompareDetails> areaExpences) {
-		if (areaExpences != null) {
-			ReportExpenceCompareDetails areaExpence = areaExpences.stream().filter(exp -> {
+		if (cropExpence != null && areaExpences != null) {
+			Optional<ReportExpenceCompareDetails> areaExpence = areaExpences.stream().filter(exp -> {
 				return exp.getAreaDetails().getCropId() == cropExpence.getCropDetails().getCropId()
 						&& exp.getAreaDetails().getActivityName().equals(cropExpence.getCropDetails().getActivityName())
 						&& exp.getAreaDetails().getTaskName().equals(cropExpence.getCropDetails().getTaskName());
-			}).findFirst().orElse(null);
-			cropExpence.setAreaDetails(areaExpence.getAreaDetails());
+			}).findFirst();
+			areaExpence.ifPresent(exp -> {
+				cropExpence.setAreaDetails(exp.getAreaDetails());
+			});
 		}
 	}
 
 	private List<ReportExpenceDetails> getAreaExpence(AreaCropExpence areaCropExpence) {
-		return areaCropExpence.getAreaExpenceItemValueList().stream()
-				.map(expenceItem -> populateReportExpence(areaCropExpence.getCrop(), expenceItem))
-				.collect(Collectors.toList());
+		return areaCropExpence == null || areaCropExpence.getAreaExpenceItemValueList() == null
+				? Collections.emptyList()
+				: areaCropExpence.getAreaExpenceItemValueList().stream()
+						.map(expenceItem -> populateReportExpence(areaCropExpence.getCrop(), expenceItem))
+						.collect(Collectors.toList());
 	}
 
 	private ReportExpenceDetails populateReportExpence(long cropId, ExpenceItemValue expenceItem) {

@@ -1,32 +1,20 @@
 package com.cropaccounting.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.cropaccounting.models.CropActivityType;
-import com.cropaccounting.models.CropExpenceList;
-import com.cropaccounting.models.ExpenceItem;
 import com.cropaccounting.models.Farmer;
 import com.cropaccounting.models.area.AreaCropExpence;
 import com.cropaccounting.models.area.AreaCropIncome;
-import com.cropaccounting.models.area.District;
-import com.cropaccounting.models.area.Division;
-import com.cropaccounting.models.area.SubDistrict;
 import com.cropaccounting.repository.AreaCropExpenceRepository;
 import com.cropaccounting.repository.AreaCropIncomeRepository;
-import com.cropaccounting.repository.DistrictRepository;
-import com.cropaccounting.repository.DivisionRepository;
 import com.cropaccounting.repository.FarmerRepository;
-import com.cropaccounting.repository.SubDistrictRepository;
 
 @Service
 public class EOService {

@@ -10,10 +10,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceUnit;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Entity
 @PersistenceUnit(name = "default")
 @Data
+@Accessors(chain = true)
 public class ExpenceItemValue {
 	@GeneratedValue
 	@Id

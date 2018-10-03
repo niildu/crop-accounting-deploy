@@ -1,21 +1,58 @@
 package com.cropaccounting.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.cropaccounting.beans.CropVarietyBean;
-import com.cropaccounting.models.*;
-import com.cropaccounting.repository.*;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import com.cropaccounting.models.Crop;
+import com.cropaccounting.models.CropActivity;
+import com.cropaccounting.models.CropActivityItem;
+import com.cropaccounting.models.CropActivityType;
+import com.cropaccounting.models.CropCalenderTask;
+import com.cropaccounting.models.CropExpenceList;
+import com.cropaccounting.models.CropIncome;
+import com.cropaccounting.models.CropIncomeItem;
+import com.cropaccounting.models.CropIncomeList;
+import com.cropaccounting.models.CropTaskMap;
+import com.cropaccounting.models.Crops;
+import com.cropaccounting.models.ExpenceItem;
+import com.cropaccounting.models.ExpenceItemValue;
+import com.cropaccounting.models.Farmer;
+import com.cropaccounting.models.FarmerCropTask;
+import com.cropaccounting.models.FarmerTask;
+import com.cropaccounting.models.IncomeItem;
+import com.cropaccounting.models.IncomeItemValue;
+import com.cropaccounting.models.UserModel;
+import com.cropaccounting.models.Varieties;
+import com.cropaccounting.repository.CropActivityItemRepository;
+import com.cropaccounting.repository.CropActivityRepository;
+import com.cropaccounting.repository.CropActivityTypeRepository;
+import com.cropaccounting.repository.CropCalenderTaskRepository;
+import com.cropaccounting.repository.CropExpenceListRepository;
+import com.cropaccounting.repository.CropIncomeItemRepository;
+import com.cropaccounting.repository.CropIncomeListRepository;
+import com.cropaccounting.repository.CropIncomeRepository;
+import com.cropaccounting.repository.CropRepository;
+import com.cropaccounting.repository.CropTaskMapRepository;
+import com.cropaccounting.repository.CropsRepository;
+import com.cropaccounting.repository.ExpenceItemRepository;
+import com.cropaccounting.repository.FarmerCropTaskRepository;
+import com.cropaccounting.repository.FarmerRepository;
+import com.cropaccounting.repository.FarmerTaskRepository;
+import com.cropaccounting.repository.IncomeItemRepository;
+import com.cropaccounting.repository.UserModelRepository;
+import com.cropaccounting.repository.VarietiesRepository;
 
 @Service
 public class CropAccountingService {
@@ -378,5 +415,93 @@ public class CropAccountingService {
 				.setStartDate(LocalDate.now())
 				.setVarity(portalVarietyId.isPresent() ? portalCropId.get() : 0l);
 		return Optional.of(crop);
+	}
+
+	private Long getLongValue(String val) {
+		try {
+			return Long.parseLong(val);
+		} catch (ArithmeticException are) {
+			return 0l;
+		}
+	}
+	
+	public IncomeItemValue getIncomeDetail(int i, String[] cropIncomeItems, String[] items, String[] amounts,
+			String[] days, String[] values) {
+		IncomeItemValue incomeItemValue = new IncomeItemValue();
+		if (cropIncomeItems[i] != null && cropIncomeItems[i].length() > 0 && cropIncomeItems[i].indexOf("_") > 0) {
+			String id = cropIncomeItems[i].split("_")[1];
+			Optional<CropIncome> cropIncome = getCropIncomeById(getLongValue(id));
+			if (cropIncome.isPresent())
+				incomeItemValue.setCropIncome(cropIncome.get());
+			// incomeItemValue.setType(items[i]);
+			if (items[i] != null && items[i].length() > 0)
+				incomeItemValue.setType(items[i]);
+			if (amounts[i] != null && amounts[i].length() > 0)
+				incomeItemValue.setAmount(new BigDecimal(amounts[i]));
+			if (days[i] != null && days[i].length() > 0)
+				incomeItemValue.setDay(Integer.parseInt(days[i]));
+			if (values[i] != null && values[i].length() > 0)
+				incomeItemValue.setTotValue(new BigDecimal(values[i]));
+		}
+		return incomeItemValue;
+	}
+	
+	public IncomeItemValue getCropIncome(int i, String[] cropIncomeItems, String[] items, String[] amounts,
+			String[] days, String[] values) {
+		if (cropIncomeItems[i] == null || cropIncomeItems[i].length() == 0 || cropIncomeItems[i].indexOf("_") <= 0)
+			return null;
+		IncomeItemValue incomeItemValue = new IncomeItemValue();
+		String id = cropIncomeItems[i].split("_")[1];
+		getCropIncomeById(getLongValue(id)).ifPresent(cropIncome -> incomeItemValue.setCropIncome(cropIncome));
+		if (items[i] != null && items[i].length() > 0)
+			incomeItemValue.setType(items[i]);
+		if (amounts[i] != null && amounts[i].length() > 0)
+			incomeItemValue.setAmount(new BigDecimal(amounts[i]));
+		if (days[i] != null && days[i].length() > 0)
+			incomeItemValue.setDay(Integer.parseInt(days[i]));
+		if (values[i] != null && values[i].length() > 0)
+			incomeItemValue.setTotValue(new BigDecimal(values[i]));
+		return incomeItemValue;
+	}
+	
+	public ExpenceItemValue getCropExpence(int i, Optional<String[]> cropActivityItems, Optional<String[]> taskIds,
+			Optional<String[]> itemExpences, Optional<String[]> labourExpences) {
+		ExpenceItemValue expenceItemValue = new ExpenceItemValue();
+		if (cropActivityItems.isPresent() && cropActivityItems.get()[i].length() > 0)
+			getCropActivityItem(getLongValue(cropActivityItems.get()[i]))
+					.ifPresent(actItem -> expenceItemValue.setCropActivityItem(actItem));
+		if (taskIds.isPresent() && taskIds.get()[i].length() > 0)
+			getCropCalenderTaskById(getLongValue(taskIds.get()[i]))
+					.ifPresent(calTask -> expenceItemValue.setCropCalenderTask(calTask));
+		expenceItemValue.setItemExpence(
+				itemExpences.isPresent() && itemExpences.get()[i].length() > 0 ? new BigDecimal(itemExpences.get()[i])
+						: BigDecimal.ZERO);
+		expenceItemValue.setLabourExpence(labourExpences.isPresent() && labourExpences.get()[i].length() > 0
+				? new BigDecimal(labourExpences.get()[i])
+				: BigDecimal.ZERO);
+		return expenceItemValue;
+	}
+	
+	public CropCalenderTask getCalenderTask(int i, Optional<String[]> replaceDates, Optional<String[]> replaceNames,
+			Optional<String[]> replaceAct, Optional<String[]> replaceTask, Optional<String[]> replaceComm) {
+		CropCalenderTask cropCalenderTask = new CropCalenderTask();
+		if (replaceDates.get()[i] != null && replaceDates.get()[i].length() > 0)
+			cropCalenderTask.setTaskDateStr(replaceDates.get()[i]);
+		if (replaceNames.isPresent() && replaceNames.get()[i] != null && replaceNames.get()[i].length() > 0)
+			cropCalenderTask.setTaskName(replaceNames.get()[i]);
+		if (replaceAct.isPresent() && replaceAct.get()[i].length() > 0) {
+			Optional<CropActivity> cropActivity = getCropActivity(getLongValue(replaceAct.get()[i]));
+			if (cropActivity.isPresent())
+				cropCalenderTask.setCropActivity(cropActivity.get());
+		}
+
+		if (replaceTask.get()[i] != null && replaceTask.get()[i].length() > 0) {
+			Optional<CropActivityType> cropActivityType = getCropActivityType(getLongValue(replaceTask.get()[i]));
+			if (cropActivityType.isPresent())
+				cropCalenderTask.setCropActivityType(cropActivityType.get());
+		}
+		if (replaceComm.get()[i] != null && replaceComm.get()[i].length() > 0)
+			cropCalenderTask.setComments(replaceComm.get()[i]);
+		return cropCalenderTask;
 	}
 }

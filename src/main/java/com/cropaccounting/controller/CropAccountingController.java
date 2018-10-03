@@ -1,6 +1,5 @@
 package com.cropaccounting.controller;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -46,9 +45,7 @@ import com.cropaccounting.service.CropAccountingService;
 public class CropAccountingController {
 	private final Logger log = LoggerFactory.getLogger(CropAccountingController.class);
 	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-	
 	private static final String REPLACE_NUMBER = "number:";
-	private static final String REPLACE_STRING = "string:";
 
 	@PersistenceContext
 	private EntityManager em;
@@ -114,9 +111,6 @@ public class CropAccountingController {
 
 		if (!cropId.isPresent()) {
 			System.out.println("IN IS PRESENT");
-			/*String query = "insert into varieties(name,crop_id) values('" + varityName + "'," + cropId
-					+ ");SELECT LAST_INSERT_ID();";
-			em.createNativeQuery(query).executeUpdate();*/
 		} else {
 			log.info("Adding crop!!");
 			Crops portalcrops = new Crops();
@@ -124,11 +118,9 @@ public class CropAccountingController {
 			if (cropType.isPresent())
 				portalcrops.setType(cropType.get().replace(",", ""));
 			cropAccountingService.saveCrops(portalcrops);
-
 			Varieties protalvirieties = new Varieties();
 			varityName.ifPresent(variety -> protalvirieties.setName(variety));
 			protalvirieties.setCrop_id(portalcrops.getId());
-
 			cropAccountingService.saveVarieties(protalvirieties);
 		}
 
@@ -162,64 +154,35 @@ public class CropAccountingController {
 			@RequestParam("days") String[] days, @RequestParam("amounts") String[] amounts,
 			@RequestParam("values") String[] values, Model model) {
 
-		//type.ifPresent(theType -> cropIncomeList.setType(theType.split(":")[1]));
 		cropIdStr.ifPresent(idString -> {
 			cropIncomeList.setCropId(idString.replace(REPLACE_NUMBER, ""));
 			cropIncomeList.setCrop(Long.parseLong(cropIncomeList.getCropId()));
-			Optional<Crops> protalCrops = cropAccountingService.getCropsById(cropIncomeList.getCrop());
-			if (protalCrops.isPresent()) {
-				cropIncomeList.setCropName(protalCrops.get().getName());
-				cropIncomeList.setType(protalCrops.get().getType());
-			}
-			
-			/*cropIncomeList.setVarity(Long.parseLong(idString.split("-")[1]));
-			Optional<Varieties> protalVarity = cropAccountingService.getVarietiesById(cropIncomeList.getVarity());
-			if (protalVarity.isPresent())
-				cropIncomeList.setVarityName(protalVarity.get().getName());*/
+			cropAccountingService.getCropsById(cropIncomeList.getCrop()).ifPresent(portalCrop -> {
+				cropIncomeList.setCropName(portalCrop.getName());
+				cropIncomeList.setType(portalCrop.getType());
+			});
 		});
 		varity.ifPresent(theVariety -> {
 			cropIncomeList.setVarity(Long.parseLong(theVariety.replace(REPLACE_NUMBER, "")));
-			Optional<Varieties> protalVarity = cropAccountingService.getVarietiesById(cropIncomeList.getVarity());
-			if (protalVarity.isPresent())
-				cropIncomeList.setVarityName(protalVarity.get().getName());
+			cropAccountingService.getVarietiesById(cropIncomeList.getVarity())
+					.ifPresent(variety -> cropIncomeList.setVarityName(variety.getName()));
 		});
+		List<IncomeItemValue> incomeItemValueList = new ArrayList<>();
+		for (int i = 0; cropIncomeItems != null && i < cropIncomeItems.length; i++) {
+			incomeItemValueList.add(cropAccountingService.getCropIncome(i, cropIncomeItems, items, amounts, days, values));
+		}
 
 		Optional<CropIncomeList> repoCropIncomeList = cropAccountingService.getCropIncomeList(cropIncomeList.getCrop(),
 				cropIncomeList.getVarity());
-
-		IncomeItemValue incomeItemValue = null;
-		Optional<CropIncome> cropIncome = null;
-		List<IncomeItemValue> incomeItemValueList = new ArrayList<>();
-
-		for (int i = 0; cropIncomeItems != null && i < cropIncomeItems.length; i++) {
-			incomeItemValue = new IncomeItemValue();
-
-			if (cropIncomeItems[i] != null && cropIncomeItems[i].length() > 0 && cropIncomeItems[i].indexOf("_") > 0) {
-				String id = cropIncomeItems[i].split("_")[1];
-				cropIncome = cropAccountingService.getCropIncomeById(Long.parseLong(id));
-				if (cropIncome.isPresent())
-					incomeItemValue.setCropIncome(cropIncome.get());
-				if (items[i] != null && items[i].length() > 0)
-					incomeItemValue.setType(items[i]);
-				if (amounts[i] != null && amounts[i].length() > 0)
-					incomeItemValue.setAmount(new BigDecimal(amounts[i]));
-				if (days[i] != null && days[i].length() > 0)
-					incomeItemValue.setDay(Integer.parseInt(days[i]));
-				if (values[i] != null && values[i].length() > 0)
-					incomeItemValue.setTotValue(new BigDecimal(values[i]));
-				incomeItemValueList.add(incomeItemValue);
-			}
-		}
 		if (repoCropIncomeList.isPresent()) {
 			repoCropIncomeList.get().getIncomeItemValueList().clear();
-			repoCropIncomeList.get().getIncomeItemValueList().addAll(incomeItemValueList);
+			repoCropIncomeList.get().setIncomeItemValueList(incomeItemValueList);
 			cropAccountingService.saveCropIncomeList(repoCropIncomeList.get());
 		} else {
+			cropIncomeList.setIncomeItemValueList(incomeItemValueList);
 			cropAccountingService.saveCropIncomeList(cropIncomeList);
 		}
-
-		List<CropIncomeList> cropIncomesList = cropAccountingService.getCropIncomeLists();
-		model.addAttribute("cropIncomesList", cropIncomesList);
+		model.addAttribute("cropIncomesList", cropAccountingService.getCropIncomeLists());
 		return "redirect:/cropmanagement/createearnings";
 	}
 
@@ -233,9 +196,7 @@ public class CropAccountingController {
 	}
 
 	@RequestMapping("/cropmanagement/createIncomeItem")
-	public void createIncomeItem() {
-
-	}
+	public void createIncomeItem() {}
 
 	@PostMapping("/cropmanagement/submitIncome")
 	public String submitIncome(@ModelAttribute CropIncome cropIncome, Model model) {
@@ -253,13 +214,10 @@ public class CropAccountingController {
 	}
 
 	@RequestMapping("/cropmanagement/createActivityItem")
-	public void createActivityItem() {
-
-	}
+	public void createActivityItem() {}
 
 	@PostMapping("/cropmanagement/submitActivity")
 	public String submitActivity(@ModelAttribute CropActivity cropActivity, Model model) {
-		System.out.println("cropActivity::" + cropActivity);
 		cropAccountingService.saveCropActivity(cropActivity);
 		model.addAttribute("activityList", cropAccountingService.getCropActivityList());
 		return "redirect:/cropmanagement/activitylist";
@@ -340,55 +298,29 @@ public class CropAccountingController {
 			@RequestParam("taskdate") Optional<String[]> replaceDates, @RequestParam("activity") Optional<String[]> replaceAct,
 			@RequestParam("task") Optional<String[]> replaceTask, @RequestParam("comments") Optional<String[]> replaceComm, Model model) {
 
+		if (!cropIdStr.isPresent())
+			return "cropmanagement/submitcropcaltask";
 		
-		cropIdStr.ifPresent(idString -> {
-			long cropIdToSet = Long.parseLong(idString.replace(REPLACE_NUMBER, ""));
-			cropTaskMap.setCrop(cropIdToSet);
-			Optional<Crops> protalCrops = cropAccountingService.getCropsById(cropIdToSet);
-			if (protalCrops.isPresent()) {
-				cropTaskMap.setType(protalCrops.get().getType());
-				cropTaskMap.setCropName(protalCrops.get().getName());
-			}
-		});
-		
+		long cropIdToSet = Long.parseLong(cropIdStr.get().replace(REPLACE_NUMBER, ""));
+		cropTaskMap.setCrop(cropIdToSet);
+		Optional<Crops> protalCrops = cropAccountingService.getCropsById(cropIdToSet);
+		if (protalCrops.isPresent()) {
+			cropTaskMap.setType(protalCrops.get().getType());
+			cropTaskMap.setCropName(protalCrops.get().getName());
+		}
 		if (varietyIdStr.isPresent()) {
 			cropTaskMap.setVarity(Long.parseLong(varietyIdStr.get().replace(REPLACE_NUMBER, "")));
-			Optional<Varieties> portalVariety = cropAccountingService.getVarietiesById(cropTaskMap.getVarity());
-			portalVariety.ifPresent(variety -> cropTaskMap.setVarityName(variety.getName()));
+			cropAccountingService.getVarietiesById(cropTaskMap.getVarity())
+					.ifPresent(variety -> cropTaskMap.setVarityName(variety.getName()));
 		}
 		
 		List<CropCalenderTask> taskList = new ArrayList<CropCalenderTask>();
-
-		Optional<CropActivity> cropActivity = null;
-		Optional<CropActivityType> cropActivityType = null;
-		System.out.println(replaceDates.get().length);
 		for (int i = 0; replaceAct.isPresent() && i < replaceAct.get().length; i++) {
-			CropCalenderTask cropCalenderTask = new CropCalenderTask();
-			if (replaceDates.get()[i] != null && replaceDates.get()[i].length() > 0)
-				cropCalenderTask.setTaskDateStr(replaceDates.get()[i]);
-			if (replaceNames.isPresent() && replaceNames.get()[i] != null && replaceNames.get()[i].length() > 0)
-				cropCalenderTask.setTaskName(replaceNames.get()[i]);
-			if (replaceAct.isPresent() && replaceAct.get()[i].length() > 0) {
-				cropActivity = cropAccountingService.getCropActivity(Long.parseLong(replaceAct.get()[i]));
-				if (cropActivity.isPresent())
-					cropCalenderTask.setCropActivity(cropActivity.get());
-			}
-
-			if (replaceTask.get()[i] != null && replaceTask.get()[i].length() > 0) {
-				cropActivityType = cropAccountingService.getCropActivityType(Long.parseLong(replaceTask.get()[i]));
-				if (cropActivityType.isPresent())
-					cropCalenderTask.setCropActivityType(cropActivityType.get());
-			}
-			if (replaceComm.get()[i] != null && replaceComm.get()[i].length() > 0)
-				cropCalenderTask.setComments(replaceComm.get()[i]);
-
-			taskList.add(cropCalenderTask);
+			taskList.add(cropAccountingService.getCalenderTask(i, replaceDates, replaceNames, replaceAct, replaceTask,
+					replaceComm));
 		}
 		cropTaskMap.setTaskList(taskList);
 		cropAccountingService.saveCropTaskMap(cropTaskMap);
-		model.addAttribute("id", Optional.ofNullable(cropTaskMap.getId()));
-		System.out.println("cropTaskMap.getId()::" + cropTaskMap.getId());
-		//createTaskExpenditure(cropTaskMap.getId(), model);
 		return "redirect:/cropmanagement/createTaskExpenditure?id=" + cropTaskMap.getId();
 	}
 
@@ -416,37 +348,22 @@ public class CropAccountingController {
 	}
 
 	@PostMapping("/cropmanagement/submitExpenceItem")
-	public String submitExpenceItem(@ModelAttribute ExpenceItem expenceItem,
+	public String submitExpenceItem(
 			@RequestParam("cropActivity") String cropActivityId,
 			@RequestParam("cropActivityType") String cropActivityTypeId,
 			@RequestParam("cropActivityItem") String cropActivityItemId) {
-		expenceItem = new ExpenceItem();
-		System.out.println("cropActivityId::" + cropActivityId);
-		Optional<CropActivity> cropActivity = null;
-		Optional<CropActivityType> cropActivityType = null;
-		Optional<CropActivityItem> cropActivityItem = null;
-
+		ExpenceItem expenceItem = new ExpenceItem();
 		if (!cropActivityId.isEmpty())
-			cropActivity = cropAccountingService.getCropActivity(Long.parseLong(cropActivityId));
+			cropAccountingService.getCropActivity(Long.parseLong(cropActivityId))
+					.ifPresent(activity -> expenceItem.setCropActivity(activity));
 		if (!cropActivityTypeId.isEmpty())
-			cropActivityType = cropAccountingService.getCropActivityType(Long.parseLong(cropActivityTypeId));
+			cropAccountingService.getCropActivityType(Long.parseLong(cropActivityTypeId))
+					.ifPresent(actType -> expenceItem.setCropActivityType(actType));
 		if (!cropActivityItemId.isEmpty())
-			cropActivityItem = cropAccountingService.getCropActivityItem(Long.parseLong(cropActivityItemId));
+			cropAccountingService.getCropActivityItem(Long.parseLong(cropActivityItemId))
+					.ifPresent(actItem -> expenceItem.setCropActivityItem(actItem));
 
-		if (cropActivity.isPresent())
-			expenceItem.setCropActivity(cropActivity.get());
-		if (cropActivityType.isPresent())
-			expenceItem.setCropActivityType(cropActivityType.get());
-		if (cropActivityItem.isPresent())
-			expenceItem.setCropActivityItem(cropActivityItem.get());
-
-		if (expenceItem != null)
-			cropAccountingService.saveExpenceItem(expenceItem);
-
-		List<ExpenceItem> expenceItemList = cropAccountingService.getExpenceItemList();
-		String json = expenceItemList.toString();
-		json = json.substring(1, json.length() - 1);
-		System.out.println("\n\n" + expenceItem.toStringJson());
+		cropAccountingService.saveExpenceItem(expenceItem);
 		return "redirect:/cropmanagement/expenceItemList";
 	}
 
@@ -473,8 +390,6 @@ public class CropAccountingController {
 		model.addAttribute("cropIncomeItemList", cropAccountingService.getCropIncomeItemList());
 	}
 
-	
-
 	@PostMapping("/cropmanagement/submitExpenditure")
 	public String submitExpenditure(@ModelAttribute CropExpenceList cropExpenceList,
 			@RequestParam("cropTaskMapId") Optional<Long> cropTaskMapId,
@@ -482,41 +397,15 @@ public class CropAccountingController {
 			@RequestParam("cropExpenceList.expenceItemValue.itemExpence") Optional<String[]> itemExpences,
 			@RequestParam("cropExpenceList.expenceItemValue.labourExpence") Optional<String[]> labourExpences,
 			@RequestParam("taskId") Optional<String[]> taskIds, Model model) {
-
-		
 		Optional<CropTaskMap> cropTaskMap = cropAccountingService
 				.getCropTaskMap(cropTaskMapId.isPresent() ? cropTaskMapId.get() : 0l);
+		List<ExpenceItemValue> expenceItemValueList = new ArrayList<>();
+		for (int i = 0; cropActivityItems.isPresent() && i < cropActivityItems.get().length; i++) {
+			expenceItemValueList.add(
+					cropAccountingService.getCropExpence(i, cropActivityItems, taskIds, itemExpences, labourExpences));
+		}
 		Optional<CropExpenceList> repoCropExpenceList = cropAccountingService.getCropExpenceListByType(
 				cropTaskMap.get().getType(), cropTaskMap.get().getCrop(), cropTaskMap.get().getVarity());
-
-		ExpenceItemValue expenceItemValue = null;
-		Optional<CropActivityItem> cropActivityItem = null;
-		Optional<CropCalenderTask> cropCalenderTask = null;
-		List<ExpenceItemValue> expenceItemValueList = new ArrayList<>();
-		BigDecimal itemExp = BigDecimal.ZERO;
-		BigDecimal labourExp = BigDecimal.ZERO;
-		for (int i = 0; cropActivityItems.isPresent() && i < cropActivityItems.get().length; i++) {
-			expenceItemValue = new ExpenceItemValue();
-			if (cropActivityItems.isPresent() && cropActivityItems.get()[i].length() > 0)
-				cropActivityItem = cropAccountingService.getCropActivityItem(Long.parseLong(cropActivityItems.get()[i]));
-			if (cropActivityItem.isPresent())
-				expenceItemValue.setCropActivityItem(cropActivityItem.get());
-
-			if (taskIds.isPresent() && taskIds.get()[i].length() > 0)
-				cropCalenderTask = cropAccountingService.getCropCalenderTaskById(Long.parseLong(taskIds.get()[i]));
-
-			if (cropCalenderTask.isPresent())
-				expenceItemValue.setCropCalenderTask(cropCalenderTask.get());
-
-			if (itemExpences.isPresent() && itemExpences.get()[i].length() > 0)
-				itemExp = new BigDecimal(itemExpences.get()[i]);
-			expenceItemValue.setItemExpence(itemExp);
-			if (labourExpences.isPresent() && labourExpences.get()[i].length() > 0)
-				labourExp = new BigDecimal(labourExpences.get()[i]);
-			expenceItemValue.setLabourExpence(labourExp);
-
-			expenceItemValueList.add(expenceItemValue);
-		}
 		if (repoCropExpenceList.isPresent())
 			cropExpenceList = repoCropExpenceList.get();
 		cropExpenceList.setExpenceItemValueList(expenceItemValueList);
