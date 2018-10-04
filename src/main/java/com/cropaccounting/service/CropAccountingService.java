@@ -2,7 +2,6 @@ package com.cropaccounting.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -223,9 +222,7 @@ public class CropAccountingService {
 	}
 	
 	public List<Crop> getCropList() {
-		List<Crop> elementList = new ArrayList<>(); 
-		cropRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return cropRepository.findAll();
 	}
 	
 	public Optional<Crop> getCropById(Long id) {
@@ -237,9 +234,7 @@ public class CropAccountingService {
 	}
 	
 	public List<Crops> getCropsList() {
-		List<Crops> elementList = new ArrayList<>(); 
-		cropsRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return cropsRepository.findAll();
 	}
 	
 	public Optional<Crops> getCropsById(Long id) {
@@ -263,15 +258,11 @@ public class CropAccountingService {
 	}
 	
 	public List<CropIncomeList> getCropIncomeLists() {
-		List<CropIncomeList> elementList = new ArrayList<>(); 
-		cropIncomeListRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return cropIncomeListRepository.findAll();
 	}
 	
 	public List<CropIncome> getCropIncomeList() {
-		List<CropIncome> elementList = new ArrayList<>(); 
-		cropIncomeRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return cropIncomeRepository.findAll();
 	}
 	
 	public Optional<CropIncome> getCropIncomeById(Long id) {
@@ -279,33 +270,23 @@ public class CropAccountingService {
 	}
 	
 	public List<CropIncomeItem> getCropIncomeItemList() {
-		List<CropIncomeItem> elementList = new ArrayList<>(); 
-		cropIncomeItemRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return cropIncomeItemRepository.findAll();
 	}
 	
 	public List<CropActivityType> getCropActivityTypeList() {
-		List<CropActivityType> elementList = new ArrayList<>(); 
-		cropActivityTypeRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return cropActivityTypeRepository.findAll();
 	}
 	
 	public List<CropActivityItem> getCropActivityItemList() {
-		List<CropActivityItem> elementList = new ArrayList<>(); 
-		cropActivityItemRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return cropActivityItemRepository.findAll();
 	}
 	
 	public List<CropActivity> getCropActivityList() {
-		List<CropActivity> elementList = new ArrayList<>(); 
-		cropActivityRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return cropActivityRepository.findAll();
 	}
 
 	public List<CropActivityType> getCropActivityTypelist() {
-		List<CropActivityType> elementList = new ArrayList<>(); 
-		cropActivityTypeRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return cropActivityTypeRepository.findAll();
 	}
 	
 	public Optional<CropActivity> getCropActivity(Long id) {
@@ -321,21 +302,15 @@ public class CropAccountingService {
 	}
 	
 	public List<ExpenceItem> getExpenceItemList() {
-		List<ExpenceItem> elementList = new ArrayList<>(); 
-		expenceItemRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return expenceItemRepository.findAll();
 	}
 	
 	public List<ExpenceItem> findOrderedList() {
-		List<ExpenceItem> elementList = new ArrayList<>(); 
-		expenceItemRepository.findOrderedList().forEach(elementList::add);
-		return elementList;
+		return expenceItemRepository.findOrderedList();
 	}
 
 	public List<ExpenceItem> getExpenceItemOrderedList() {
-		List<ExpenceItem> elementList = new ArrayList<>(); 
-		expenceItemRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return expenceItemRepository.findAll();
 	}
 	
 	public Optional<ExpenceItem> getExpenceItem(Long id) {
@@ -343,9 +318,7 @@ public class CropAccountingService {
 	}
 	
 	public List<CropTaskMap> getCropTaskMapList() {
-		List<CropTaskMap> elementList = new ArrayList<>(); 
-		cropTaskMapRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return cropTaskMapRepository.findAll();
 	}
 	
 	public Optional<CropTaskMap> getCropTaskMap(Long id) {
@@ -353,15 +326,11 @@ public class CropAccountingService {
 	}
 	
 	public List<CropExpenceList> getCropExpenceLists() {
-		List<CropExpenceList> elementList = new ArrayList<>(); 
-		cropExpenceListRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return cropExpenceListRepository.findAll();
 	}
 	
 	public List<IncomeItem> getIncomeItemList() {
-		List<IncomeItem> elementList = new ArrayList<>(); 
-		incomeItemRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return incomeItemRepository.findAll();
 	}
 	
 	public Optional<CropExpenceList> getCropExpenceListByType(String type, long crop, long varity) {

@@ -1,9 +1,11 @@
 package com.cropaccounting.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.List;
+
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.cropaccounting.models.CropIncomeItem;
 
-public interface CropIncomeItemRepository extends CrudRepository<CropIncomeItem, Long>  {
-
+public interface CropIncomeItemRepository extends PagingAndSortingRepository<CropIncomeItem, Long>  {
+	public List<CropIncomeItem> findAll();
 }

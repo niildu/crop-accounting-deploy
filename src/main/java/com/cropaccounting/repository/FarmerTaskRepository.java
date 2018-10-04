@@ -1,9 +1,11 @@
 package com.cropaccounting.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.List;
+
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.cropaccounting.models.FarmerTask;
 
-public interface FarmerTaskRepository extends CrudRepository<FarmerTask, Long> {
-
+public interface FarmerTaskRepository extends PagingAndSortingRepository<FarmerTask, Long> {
+	public List<FarmerTask> findAll();
 }

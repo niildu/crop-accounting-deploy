@@ -129,24 +129,20 @@ public class UdcController {
 			@RequestParam("cropId") Optional<String> cropIdStr, @RequestParam("variety") Optional<String> varity,
 			@RequestParam("crop.startDateString") Optional<String> date, Model model) {
 		
-		Optional<Farmer> farmer = null;
 		if (farmerId.isPresent())
-			farmer = cropAccountingService.getFarmerById(farmerId.get());
-		if (farmer.isPresent())
-			crop.setFarmer(farmer.get());
+			cropAccountingService.getFarmerById(farmerId.get()).ifPresent(farmer -> crop.setFarmer(farmer));
 		
 		FarmerCropTask farmerCropTask = new FarmerCropTask();
 		
 		cropIdStr.ifPresent(idString -> {
 			crop.setCropId(idString.replace(REPLACE_NUMBER, ""));
 			crop.setCrop(Long.parseLong(crop.getCropId()));
-			Optional<Crops> protalCrops = cropAccountingService.getCropsById(crop.getCrop());
-			if (protalCrops.isPresent()) {
-				crop.setName(protalCrops.get().getName());
-				crop.setType(protalCrops.get().getType());
+			cropAccountingService.getCropsById(crop.getCrop()).ifPresent(crops -> {
+				crop.setName(crops.getName());
+				crop.setType(crops.getType());
 				farmerCropTask.setCrop(crop.getCrop());
 				model.addAttribute("portalCropId", crop.getCrop());
-			}
+			});
 			
 			varity.ifPresent(theVariety -> {
 				crop.setVarity(Long.parseLong(theVariety.replace(REPLACE_NUMBER, "")));

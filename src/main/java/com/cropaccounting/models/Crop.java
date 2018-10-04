@@ -30,9 +30,8 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors (chain = true)
 public class Crop {
-	@SequenceGenerator(name = "cropSqGn", sequenceName = "cropSeq", initialValue = 1, allocationSize = 100)
-	@GeneratedValue(generator = "cropSqGn")
 	@Id
+	@GeneratedValue
 	private long id;
 	//@NonNull
 	private String name;

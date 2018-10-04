@@ -43,14 +43,11 @@ public class EOService {
 	}
 	
 	public List<AreaCropExpence> getAreaCropExpenceList() {
-		List<AreaCropExpence> elementList = new ArrayList<>(); 
-		areaCropExpenceRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return areaCropExpenceRepository.findAll();
 	}
 	
 	public Optional<AreaCropIncome> getAreaCropIncomeByType(long crop, long varity, long divisionId,
 			long districtId, long subDistrictId) {
-		System.out.println(" crop::" + crop + " " + " varity::" + varity);
 		return areaCropIncomeRepository.findAreaCropIncome(crop, varity, divisionId, districtId, subDistrictId);
 	}
 	

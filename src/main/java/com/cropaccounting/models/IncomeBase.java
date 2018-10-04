@@ -3,7 +3,9 @@ package com.cropaccounting.models;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -11,6 +13,7 @@ import lombok.experimental.Accessors;
 @MappedSuperclass
 @Data
 @Accessors(chain = true)
+@Table(uniqueConstraints= {@UniqueConstraint(columnNames= {"type", "crop", "varity"})})
 public class IncomeBase {
 	@Id
 	@GeneratedValue

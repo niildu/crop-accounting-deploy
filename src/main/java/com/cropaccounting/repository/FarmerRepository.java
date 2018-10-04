@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
@@ -23,4 +22,6 @@ public interface FarmerRepository extends PagingAndSortingRepository<Farmer, Lon
 	
 	@Query("SELECT f FROM Farmer f WHERE f.mobileNo like %:mobileNo")
 	public List<Farmer> searchByMobile(@Param("mobileNo") String mobileNo, Pageable pageable);
+	
+	public List<Farmer> findAll();
 }

@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.cropaccounting.models.ExpenceBase;
 import com.cropaccounting.models.ExpenceItemValue;
@@ -19,6 +21,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Table(uniqueConstraints= {@UniqueConstraint(columnNames= {"division_id", "district_id", "sub_district_id"})})
 public class AreaCropExpence extends ExpenceBase {
 	@GeneratedValue
 	@Id
