@@ -7,23 +7,46 @@
 		<div>
 			<div>
 				<div class="row">
-					<div class="col-sm-9">
+					<div class="col-sm-12">
 						<div class="panel panel-default">
-							<div class="panel-heading font-bold" th:text="#{activity.add}"></div>
+							<div class="panel-heading font-bold" th:text="#{crop.farmer.list}"></div>
 							<div class="panel-body">
-							<table border="1">
+							<div class="form-group">
+								<label><strong th:text="#{crop.farmer.nid}"> :</strong></label>
+								<div class="col-sm-6 " style="padding:0 0 0 0">
+									<input type="text" value="" id="datepicker"
+										name="startDateString" class="form-control">
+								</div>
+							</div>
+							<div>
+							<div class="form-actions" >
+								<button type="submit" class="btn btn-sm btn-primary" th:text="#{crop.save}"></button>
+							</div>
+							<hr>
+							<table class="table table-bordered table-hover">
 								<thead>
 									<tr>
-										<th th:text="#{msg.id}" />
-										<th th:text="#{msg.name}" />
+										<!-- <th th:text="#{crop.farmer.id}" /> -->
+										<th th:text="#{crop.farmer.name}" />
+										<th th:text="#{crop.farmer.nid}" />
+										<th th:text="#{crop.farmer.mobileNo}" />
+										<th th:text="#{crop.farmer.cardNo}" />
+										<th th:text="#{crop.farmer.landAmount}" />
+										<th>#</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr th:each="book, iStat : ${data}"
+									<tr th:each="farmer, iStat : ${page.getContent()}"
 										th:style="${iStat.odd}? 'font-weight: bold;'"
 										th:alt-title="${iStat.even}? 'even' : 'odd'">
-										<td th:text="${book.id}" />
-										<td th:text="${book.name}" />
+										<td th:text="${farmer.id}" />
+										<td th:text="${farmer.name}" />
+										<td th:text="${farmer.nid}" />
+										<td th:text="${farmer.mobileNo}" />
+										<td th:text="${farmer.farmerCardNo}" />
+										<td>
+											<a class="btn btn-mini btn-warning" href="#"><i class="icon-edit"></i> Edit</a>
+										</td>
 									</tr>
 								</tbody>
 							</table>

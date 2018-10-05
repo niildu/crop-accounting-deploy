@@ -25,8 +25,9 @@ function drawComparisonChart(expenceComparison, config) {
         chart: {
             type: 'bar'
         },
+        //var year = moment().format('YYYY'); var year = moment().year();Aug 4, 2014
         title: {
-            text: config.heading + ', 2018'
+            text: config.heading
         },
         subtitle: {
             text: 'Source: <a href="http://populationpyramid.net/germany/2018/">' 
@@ -59,7 +60,9 @@ function drawComparisonChart(expenceComparison, config) {
                 }
             } */
          },
-
+         credits: {
+             enabled: false
+         },
          plotOptions: {
              series: {
                  stacking: 'normal'

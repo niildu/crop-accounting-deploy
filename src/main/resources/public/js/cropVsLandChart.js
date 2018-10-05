@@ -25,7 +25,7 @@ function drawCropVsLandChart(cropLandData, config) {
         enabled: false
     },
     series: [{
-        name: 'shotok',
+        name: config.data.text,
             colorByPoint:true,
             data: cropLandData
     	}]

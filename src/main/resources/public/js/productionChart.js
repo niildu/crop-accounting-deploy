@@ -98,14 +98,33 @@ function drawMonthWiseProductionChart(productionData, config) {
     }]
 	
 	*/
+	var converters = {
+		// Latin to Farsi
+		fa : function(number) {
+			return number.toString().replace(/\d/g, function(d) {
+				return String.fromCharCode(d.charCodeAt(0) + 1728);
+			});
+		},
+		// Latin to Arabic
+		// 2432-2559
+		bn : function(number) {
+			return number.toString().replace(/\d/g, function(d) {
+				// console.log(d.charCodeAt(0));
+				return String.fromCharCode(d.charCodeAt(0) + (2534 - 48));
+			});
+		}
+	};
 	
 	var productionChart = Highcharts.chart('production', {
 	    chart: {
 	        type: 'column'
 	    },
 	    title: {
-	        text: 'Monthly Average Rainfall'
+	        text: config.heading
 	    },
+	    credits: {
+            enabled: false
+        },
 	    subtitle: {
 	        text: 'Source: WorldClimate.com'
 	    },
@@ -116,15 +135,20 @@ function drawMonthWiseProductionChart(productionData, config) {
 	        crosshair: true
 	    },
 	    yAxis: {
+    	    labels: {
+    	        formatter: function () {
+    	            return converters.bn((this.value / 1016.05).toFixed(2)) + '(' + config.unit + ')';
+    	        }
+    	    },
 	        min: 0,
 	        title: {
-	            text: 'Rainfall (mm)'
+	            text: config.yaxis
 	        }
 	    },
 	    tooltip: {
 	        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
 	        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-	            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+	            '<td style="padding:0"><b>{point.y:.1f} ' + config.detail + '</b></td></tr>',
 	        footerFormat: '</table>',
 	        shared: true,
 	        useHTML: true

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.cropaccounting.models.CropIncomeList;
 import com.cropaccounting.models.CropTaskMap;
 import com.cropaccounting.models.ExpenceItemValue;
+import com.cropaccounting.models.Farmer;
 import com.cropaccounting.models.IncomeItemValue;
 import com.cropaccounting.models.Varieties;
 import com.cropaccounting.models.area.AreaCropExpence;
@@ -28,6 +29,7 @@ import com.cropaccounting.models.area.SubDistrict;
 import com.cropaccounting.service.AreaService;
 import com.cropaccounting.service.CropAccountingService;
 import com.cropaccounting.service.EOService;
+import com.cropaccounting.util.PageWrapper;
 
 @Controller
 public class EOController {
@@ -244,7 +246,7 @@ public class EOController {
 	}
 	
 	@RequestMapping(value = "/eo/farmerlist", method = RequestMethod.GET)
-	public void listBooks(Model model, @RequestParam(defaultValue = "0") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+	public String listBooks(Model model, @RequestParam(defaultValue = "0") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
 //		page.ifPresent(p -> currentPage = p);
 //		size.ifPresent(s -> pageSize = s);
 //		Page<Farmer> bookPage = eoService.findPaginated(PageRequest.of(currentPage - 1, pageSize));
@@ -256,8 +258,11 @@ public class EOController {
 //					.collect(Collectors.toList());
 //			model.addAttribute("pageNumbers", pageNumbers);
 //		}
-		model.addAttribute("data", eoService.findPaginated(PageRequest.of(page.isPresent() ? page.get().intValue() : 0, pageSize)));
+		PageWrapper<Farmer> pagew = new PageWrapper<>(
+				eoService.findPaginated(PageRequest.of(page.isPresent() ? page.get().intValue() : 0, 3)), "/eo/farmerlist"); 
+		model.addAttribute("page", pagew);
+		//model.addAttribute("page", eoService.findPaginated(PageRequest.of(page.isPresent() ? page.get().intValue() : 0, pageSize)));
         model.addAttribute("currentPage", page);
-		//return "/eo/farmerlist";
+		return "/eo/farmerlist";
 	}
 }

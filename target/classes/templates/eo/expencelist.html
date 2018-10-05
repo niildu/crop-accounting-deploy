@@ -7,24 +7,29 @@
 		<div>
 			<div>
 				<div class="row">
-					<div class="col-sm-9">
+					<div class="col-sm-12">
 						<div class="panel panel-default">
-							<div class="panel-heading font-bold" th:text="#{activity.add}"></div>
+							<div class="panel-heading font-bold" th:text="#{income.list}"></div>
 							<div class="panel-body">
+								<div class="form-group">
+									<label><strong th:text="#{income.allcountry}"> :</strong></label>
+								</div>
 								<table class="table table-striped">
 									<thead>
 										<tr>
 											<th>#</th>
-											<th th:text="#{activity.list}"></th>
+											<th th:text="#{crop.name}"></th>
+											<th th:text="#{crop.variety}"></th>
+											<th th:text="#{crop.type}"></th>
 											<th></th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr th:each="expence, iter : ${cropExpences}">
 											<th scope="row" th:text="${iter.index + 1}"></th>
-											<td th:text="${expence.type}"></td>
 											<td th:text="${crops.get('' + expence.crop).stream().findFirst().orElse('').name}"></td>
-											<td th:text="${varieties.get('' + expence.varity).stream().findFirst().orElse('').name}"></td> 
+											<td th:text="${varieties.get('' + expence.varity).stream().findFirst().orElse('').name}"></td>
+											<td th:text="${expence.type}"></td> 
 											<td><a
 												class="btn btn-mini btn-warning"
 												th:href="@{/eo/createAreaTaskExpenditure?id=} + ${expence.id}"><i
@@ -35,21 +40,27 @@
 										</tr>
 									</tbody>
 								</table>
+								<div class="form-group">
+									<label><strong th:text="#{income.area}"> :</strong></label>
+								</div>
 								<table class="table table-striped">
 									<thead>
 										<tr>
+											<tr>
 											<th>#</th>
-											<th th:text="#{activity.list}"></th>
+											<th th:text="#{crop.name}"></th>
+											<th th:text="#{crop.variety}"></th>
+											<th th:text="#{crop.type}"></th>
 											<th></th>
+										</tr>
 										</tr>
 									</thead>
 									<tbody>
 										<tr th:each="expence, iter : ${areaExpences}">
 											<th scope="row" th:text="${iter.index + 1}"></th>
-											<td th:text="${expence.type}"></td>
 											<td th:text="${crops.get('' + expence.crop).stream().findFirst().orElse('').name}"></td>
 											<td th:text="${varieties.get('' + expence.varity).stream().findFirst().orElse('').name}"></td>
-
+											<td th:text="${expence.type}"></td>
 											<td><a
 												class="btn btn-mini btn-warning"
 												th:href="@{/eo/updateAreaTaskExpenditure?id=} + ${expence.id}"><i

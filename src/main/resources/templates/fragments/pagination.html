@@ -1,5 +1,58 @@
-<ul th:fragment="pagination" class="nav nav-pills">
+<!-- <ul th:fragment="paginationbar" class="nav nav-pills">
 	<li class="nav-item" th:each="i: ${#numbers.sequence(0,data.totalPages-1)}">
 		<a th:href="@{/eo/farmerlist(page=${i})}" th:text="${i}" class="nav-link"></a>
 	</li>
-</ul>
+</ul> -->
+<!-- Pagination Bar -->
+<div th:fragment="pagination">
+	<style>
+	.pagination {
+	    display: inline-block;
+	}
+	.pagination a {
+	    color: black;
+	    float: left;
+	    padding: 8px 16px;
+	    text-decoration: none;
+	}
+	.pagination a.active {
+	    background-color: #4CAF50;
+	    color: white;
+	}
+	.pagination a:hover:not(.active) {background-color: #ddd;}
+	</style>
+  <!-- <div class="pagination pagination-centered"> -->
+	<div class="clearFix"></div>
+	<div class="pagination">
+		<a th:class="${page.firstPage} ? 'disabled' : ''" href="#">&laquo;</a>
+		<a th:href='@{${page.url}(page=${iter.index})}'
+			th:each='item, iter : ${page.items}'
+			th:class="${item.current}? 'active' : ''">
+			<span th:text="${iter.index + 1}"></span></a> 
+		<a th:class="${page.lastPage} ? 'disabled' : ''">&raquo;</a>
+	</div>
+	<!--     <ul class="pagination">
+    th:class="${#httpServletRequest.requestURI == '/eo/incomelist' ? 'nav-link active' : 'nav-link'}"
+      <li th:class="${page.firstPage} ? 'disabled' : ''">
+        <span th:if='${page.firstPage}'>← First</span>
+        <a th:if='${not page.firstPage}' th:href='@{${page.url}(page.page=1,page.size=${page.size})}'>← First</a>
+      </li>
+      <li th:class="${page.hasPreviousPage} ? '' : 'disabled'">
+        <span th:if='${not page.hasPreviousPage}'>«</span>
+        <a th:if='${page.hasPreviousPage}' th:href='@{${page.url}(page.page=${page.number-1},page.size=${page.size})}' title='Go to previous page'>«</a>
+      </li>
+      <li th:each='item : ${page.items}' th:class="${item.current}? 'active' : ''">
+        <span th:if='${item.current}' th:text='${item.number}'>1</span>
+        <a th:if='${not item.current}' th:href='@{${page.url}(page.page=${item.number},page.size=${page.size})}'><span th:text='${item.number}'>1</span></a>
+      </li>
+      <li th:class="${page.hasNextPage} ? '' : 'disabled'">
+        <span th:if='${not page.hasNextPage}'>»</span>
+        <a th:if='${page.hasNextPage}' th:href='@{${page.url}(page.page=${page.number+1},page.size=${page.size})}' title='Go to next page'>»</a>
+      </li>
+      <li th:class="${page.lastPage} ? 'disabled' : ''">
+        <span th:if='${page.lastPage}'>Last →</span>
+        <a th:if='${not page.lastPage}' th:href='@{${page.url}(page.page=${page.totalPages},page.size=${page.size})}'>Last →</a>
+      </li>
+    </ul> -->
+	<!-- </div> -->
+</div>

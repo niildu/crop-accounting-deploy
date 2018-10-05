@@ -22,7 +22,10 @@
    <script th:inline="javascript">
         /*<![CDATA[*/
    			var cropvslandConfig = {
-        		"heading" : [[#{report.cropvsland.heading}]]	
+        		"heading" : [[#{report.cropvsland.heading}]],
+        		"data" : {
+        			"text" : [[#{report.cropvsland.unit}]]
+        		}
         	}
         	$.ajax({ 
 		        type: 'GET', 

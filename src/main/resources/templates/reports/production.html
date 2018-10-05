@@ -23,8 +23,10 @@
    <script th:inline="javascript">
         /*<![CDATA[*/
         	var monthWiseRegistrationConfig = {
-					"heading" : [[#{report.crop.registration.heading}]],
-					"yaxis" : [[#{report.crop.registration.cropcount}]],
+					"heading" : [[#{report.production.heading}]],
+					"yaxis" : [[#{report.production.yaxis}]],
+					"detail" : [[#{report.production.details}]],
+					"unit" : [[#{report.production.weigh.unit}]],
 					"month" : {
 						"jan" : [[#{report.month.jan}]],
 						"feb" : [[#{report.month.feb}]],

@@ -93,7 +93,7 @@
 			<a th:if="${#authorization.expression('hasRole(''EO'')')}" 
 				th:class="${#httpServletRequest.requestURI == '/eo/farmerlist' ? 'nav-link active' : 'nav-link'}"
 				th:href="@{/eo/farmerlist}"> <span
-				th:text="FarmerList"></span>
+				th:text="#{crop.farmer.list}"></span>
 			</a>
 		</li>
 		<!--
