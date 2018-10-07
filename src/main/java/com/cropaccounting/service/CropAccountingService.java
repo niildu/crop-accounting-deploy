@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.cropaccounting.beans.CropVarietyBean;
+import com.cropaccounting.krishi.api.clientapi.KrishiAPI;
+import com.cropaccounting.krishiapi.KrishiAPIService;
 import com.cropaccounting.models.Crop;
 import com.cropaccounting.models.CropActivity;
 import com.cropaccounting.models.CropActivityItem;
@@ -113,6 +115,9 @@ public class CropAccountingService {
 	@Autowired
 	private FarmerRepository farmerRepository;
 	
+	@Autowired
+	private KrishiAPIService krishiAPIService;
+	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getTypes() {
 		return em.createNativeQuery("SELECT distinct a.type FROM crops a").getResultList();
@@ -120,6 +125,13 @@ public class CropAccountingService {
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getCrops() {
+//		return krishiAPIService.getCrops().stream().map(crop -> {
+//			Object[] row = new Object[3];
+//			row[0] = crop.getType();
+//			row[1] = crop.getName();
+//			row[2] = crop.getId();
+//			return row;
+//		}).collect(Collectors.toList());
 		return em.createNativeQuery("SELECT  a.type, a.name, a.id FROM crops a").getResultList();
 	}
 	

@@ -1,0 +1,6 @@
+[submodule "/krishi-api"]
+	path = /krishi-api
+	url = https://github.com/wahid-nwr/krishi-api.git
+[submodule "krishi-api"]
+	path = krishi-api
+	url = https://github.com/wahid-nwr/krishi-api.git
