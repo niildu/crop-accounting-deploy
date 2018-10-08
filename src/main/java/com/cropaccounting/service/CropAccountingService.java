@@ -122,6 +122,16 @@ public class CropAccountingService {
 	public List<Object[]> getTypes() {
 		return em.createNativeQuery("SELECT distinct a.type FROM crops a").getResultList();
 	}
+
+	public List<Object[]> getPortalCrops() {
+		return krishiAPIService.getCrops().stream().map(crop -> {
+			Object[] row = new Object[3];
+			row[0] = crop.getType();
+			row[1] = crop.getName();
+			row[2] = crop.getId();
+			return row;
+		}).collect(Collectors.toList());
+	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getCrops() {
