@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cropaccounting.models.CropExpenceList;
 import com.cropaccounting.models.CropIncomeList;
 import com.cropaccounting.models.CropTaskMap;
 import com.cropaccounting.models.ExpenceItemValue;
@@ -34,7 +35,7 @@ import com.cropaccounting.util.PageWrapper;
 @Controller
 public class EOController {
 	private static final String REPLACE_NUMBER = "number:";
-	private static int pageSize = 20;
+	private static final int PAGE_SIZE = 20;
 
 	@Autowired
 	private AreaService areaService;
@@ -46,14 +47,17 @@ public class EOController {
 	private EOService eoService;
 	
 	@RequestMapping("/eo/expencelist")
-	public void expencelist(Model model) {
+	public void expencelist(Model model, @RequestParam(defaultValue = "0") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+		PageWrapper<CropExpenceList> pagew = new PageWrapper<>(
+				cropAccountingService.getCropExpenceLists(PageRequest.of(page.isPresent() ? page.get().intValue() : 0, PAGE_SIZE)), "/eo/expencelist"); 
+		model.addAttribute("page", pagew);
+        model.addAttribute("currentPage", page);
 		model.addAttribute("crops", cropAccountingService.getCropsList().stream().collect(Collectors.groupingBy(crop -> "" + crop.getId())));
 		model.addAttribute("varieties", cropAccountingService.getVarietyList().stream()
 				.collect(Collectors.groupingBy(variety -> "" + variety.getId())));
 		model.addAttribute("cropTaskMapList", cropAccountingService.getCropTaskMapList());
 		model.addAttribute("expenceItemList", cropAccountingService.getExpenceItemList());
 		model.addAttribute("areaExpences", eoService.getAreaCropExpenceList());
-		model.addAttribute("cropExpences", cropAccountingService.getCropExpenceLists());
 	}
 	
 	@RequestMapping("/eo/createAreaTaskExpenditure")
@@ -134,11 +138,14 @@ public class EOController {
 	}
 
 	@RequestMapping("/eo/incomelist")
-	public void incomelist(Model model) {
+	public void incomelist(Model model, @RequestParam(defaultValue = "0") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+		PageWrapper<CropIncomeList> pagew = new PageWrapper<>(
+				cropAccountingService.getCropIncomeLists(PageRequest.of(page.isPresent() ? page.get().intValue() : 0, PAGE_SIZE)), "/eo/incomelist"); 
+		model.addAttribute("page", pagew);
+        model.addAttribute("currentPage", page);
 		model.addAttribute("cropTaskMapList", cropAccountingService.getCropTaskMapList());
 		model.addAttribute("expenceItemList", cropAccountingService.getExpenceItemList());
 		model.addAttribute("areaIncomes", eoService.getAreaCropIncomeList());
-		model.addAttribute("cropIncomes", cropAccountingService.getCropIncomeLists());
 	}
 	
 	@RequestMapping("/eo/areacropearning")
@@ -245,8 +252,8 @@ public class EOController {
 		return "redirect:/eo/incomelist";
 	}
 	
-	@RequestMapping(value = "/eo/farmerlist", method = RequestMethod.GET)
-	public String listBooks(Model model, @RequestParam(defaultValue = "0") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+	@RequestMapping(value = "/eo/farmerlist")
+	public String listBooks(@RequestParam("nid") Optional<String> nid, Model model, @RequestParam(defaultValue = "0") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
 //		page.ifPresent(p -> currentPage = p);
 //		size.ifPresent(s -> pageSize = s);
 //		Page<Farmer> bookPage = eoService.findPaginated(PageRequest.of(currentPage - 1, pageSize));
@@ -259,10 +266,12 @@ public class EOController {
 //			model.addAttribute("pageNumbers", pageNumbers);
 //		}
 		PageWrapper<Farmer> pagew = new PageWrapper<>(
-				eoService.findPaginated(PageRequest.of(page.isPresent() ? page.get().intValue() : 0, 3)), "/eo/farmerlist"); 
+				eoService.findPaginated(nid, PageRequest.of(page.isPresent() ? page.get().intValue() : 0, PAGE_SIZE)),
+				"/eo/farmerlist?nid=" + (nid.isPresent() ? nid.get() : ""));
 		model.addAttribute("page", pagew);
 		//model.addAttribute("page", eoService.findPaginated(PageRequest.of(page.isPresent() ? page.get().intValue() : 0, pageSize)));
         model.addAttribute("currentPage", page);
+        model.addAttribute("nid", nid);
 		return "/eo/farmerlist";
 	}
 }

@@ -1,0 +1,115 @@
+<section th:fragment="cropselection" class="form-group">
+	<div ng-app="myApp" ng-controller="dropdownCtrl">
+		<label><strong><span th:text="#{crop.task.list}"></span></strong></label>
+		<div class="row">
+			<div class="col-sm-3">
+				<div class="control-group">
+					<label for="state" class="control-label"
+						th:text="#{crop.name}"></label>
+					<select name="cropId" required="required" ng-model="cropdtl.crop"
+						ng-options="x.id as x.name for x in crops"
+						ng-change="getVarities()" class="form-control"
+						id="state">
+						<option value="" th:text="#{choose.all}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="control-group">
+					<label for="city" class="control-label"
+						th:text="#{crop.variety}"></label> <select
+						required="required" name="variety" onchange="varitycng()"
+						ng-model="cropdtl.variety"
+						ng-options="x.id as x.variety for x in varities"
+						class="form-control" id="city">
+						<option value="">--<span th:text="#{choose.all}">--</span></option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr>
+	<script type="text/javascript" th:inline="javascript">
+	    /*<![CDATA[*/
+		var cropList = [[${crops}]];
+	    var theList = [[${cropActivityList}]];
+	    var typeList = [[${types}]];
+	    
+	    var myApp = angular.module("myApp", []);
+	
+		myApp.factory("CustomerService", ['$filter', function($filter){
+				var types = [];
+				var crops = [];
+				var varities = [];
+		        var service = {}; 
+		        var i = 0;    
+		        var cropList = [[${crops}]];
+		        var typeList = [[${types}]];
+		        var varietyList = [[${varieties}]];
+		        console.log(varietyList);
+		        console.log(cropList);
+				for(var i = 0; i < typeList.length; i++) {
+					types[i] = {'type' : typeList[i]};
+				}
+				
+				i = 0;
+				for(var i =0; i < cropList.length; i++)	{
+					crops[i] = {'name':cropList[i][1],'type':cropList[i][0],'id':cropList[i][2]};
+				}
+				
+				i = 0;
+				for(var i = 0; i < varietyList.length; i++)	{
+					varities[i] = {'id' : varietyList[i][2], 'crop_id':varietyList[i][0],'variety':varietyList[i][1]};
+					//varities[i] = {'crop_id':varietyList[i].crop_id, 'variety_id':varietyList[i].id, 'variety':varietyList[i].name};
+				}
+
+				service.getType = function() { 
+		            return types;
+		        };
+		        
+				service.getTypeCrop = function() {
+		            var cropList = crops;//($filter('filter')(crops, {type: type}));
+		            //document.getElementById("createcrop").class = '';
+		             $("#createcrop").removeAttr("disabled");
+		            return cropList;
+		        };
+		        
+				service.getCropVarity = function(crop) {		
+					$("#createcrop").attr("disabled", "true");
+					$("#createvarity").removeAttr("disabled");
+		            var varitiesList = ($filter('filter')(varities, {crop_id: crop}));
+		            console.log('varitiesList');
+		            console.log(varitiesList);
+		            return varitiesList;
+		        };
+				
+		        return service;       
+		    }]);
+		    
+		myApp.controller('dropdownCtrl', ['$scope','CustomerService', 
+		    function($scope, CustomerService) {
+			$scope.createcrop = {id : ''};
+			$scope.createcroptype = {type : ''};
+		    $scope.cropdtl = {
+		        Name : '', 
+		        type : '', 
+		        crop : '', 
+		        varity : ''
+		    };
+		    $scope.types = CustomerService.getType();
+		    $scope.crops = CustomerService.getTypeCrop();
+		    
+		    $scope.getTypeCrops = function() {
+				//$scope.createcroptype = {type:$scope.cropdtl.type};
+		        $scope.crops = CustomerService.getTypeCrop();
+		        $scope.varities = [];
+		    };
+		
+		    $scope.getVarities = function() {
+				$scope.createcrop = {id:$scope.cropdtl.crop}		
+			    $scope.varities = CustomerService.getCropVarity($scope.cropdtl.crop);
+		    }
+		}]);
+	/*]]>*/
+	</script>
+</section>

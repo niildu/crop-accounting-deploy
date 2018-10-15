@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -38,12 +39,14 @@ import com.cropaccounting.models.area.SubDistrict;
 import com.cropaccounting.service.AreaService;
 import com.cropaccounting.service.CropAccountingService;
 import com.cropaccounting.service.EOService;
+import com.cropaccounting.util.PageWrapper;
 import com.cropaccounting.util.UnitEnum;
 
 @Controller
 public class UdcController {
 	private static final String REPLACE_NUMBER = "number:";
 	private static final String REPLACE_STRING = "string:";
+	private static final int PAGE_SIZE = 20;
 	
 	@Autowired
 	private CropAccountingService cropAccountingService;
@@ -55,14 +58,20 @@ public class UdcController {
 	private AreaService areaService;
 	
 	@RequestMapping("/app/farmercropearning")
-	public void farmercropearning(@RequestParam("nid") Optional<String> nid, Model model) {
-
+	public void farmercropearning(@RequestParam("nid") Optional<String> nid, Model model,
+			@RequestParam(defaultValue = "0") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
 		LocalDate startDate = LocalDate.now();
 		startDate = startDate.minusMonths(6);
-		List<Crop> crops = cropAccountingService.getCropByNID(nid.isPresent() ? nid.get() : "", startDate);
+//		List<Crop> crops = cropAccountingService.getCropByNID(nid.isPresent() ? nid.get() : "", startDate);
+		PageWrapper<Crop> pagew = new PageWrapper<>(
+				cropAccountingService.getCropByNID(nid.isPresent() ? nid.get() : "", startDate, PageRequest
+						.of(page.isPresent() ? page.get().intValue() : 0, size.isPresent() ? size.get() : PAGE_SIZE)),
+				"/app/farmercropearning?nid=" + (nid.isPresent() ? nid.get() : ""));
+		model.addAttribute("page", pagew);
+		model.addAttribute("currentPage", page);
 
 		Map<String, List<CropIncomeList>> incomeMap = new HashMap<>();
-		for (Crop crop : crops) {
+		for (Crop crop : pagew.getContent()) {
 			String cropType = crop.getType().replace(REPLACE_STRING, "");
 			incomeMap.put("" + crop.getCrop(),
 					cropAccountingService.getCropIncomeLists(crop.getCrop(), crop.getVarity()));
@@ -70,7 +79,7 @@ public class UdcController {
 
 		model.addAttribute("nid", nid);
 		model.addAttribute("incomeMap", incomeMap);
-		model.addAttribute("crops", crops);
+//		model.addAttribute("crops", crops);
 	}
 
 	@RequestMapping("/app/cropcalender1")

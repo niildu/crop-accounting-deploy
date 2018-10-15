@@ -1,6 +1,5 @@
 package com.cropaccounting.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,11 +59,13 @@ public class EOService {
 	}
 	
 	public List<AreaCropIncome> getAreaCropIncomeList() {
-		List<AreaCropIncome> elementList = new ArrayList<>(); 
-		areaCropIncomeRepository.findAll().forEach(elementList::add);
-		return elementList;
+		return areaCropIncomeRepository.findAll();
 	}
-	
+
+	public Page<AreaCropIncome> getAreaCropIncomeList(Pageable pageable) {
+		return areaCropIncomeRepository.findAll(pageable);
+	}
+
 	public Page<Farmer> findPaginated(Pageable pageable) {
 //		int pageSize = pageable.getPageSize();
 //		int currentPage = pageable.getPageNumber();
@@ -80,5 +81,9 @@ public class EOService {
 //			= new PageImpl<Farmer>(list, PageRequest.of(currentPage, pageSize), books.size());
 //			return bookPage;
 		return farmerRepository.findAll(pageable);
+	}
+
+	public Page<Farmer> findPaginated(Optional<String> nid, Pageable pageable) {
+		return farmerRepository.searchByNID(nid.isPresent() ? nid.get() : "", pageable);
 	}
 }

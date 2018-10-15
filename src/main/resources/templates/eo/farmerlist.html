@@ -11,7 +11,21 @@
 						<div class="panel panel-default">
 							<div class="panel-heading font-bold" th:text="#{crop.farmer.list}"></div>
 							<div class="panel-body">
-							<div class="form-group">
+							<form th:action="@{/eo/farmerlist}" th:method="POST" class="form-horizontal">
+							<div class="control-group col-sm-4" >
+								<label for="nid" class="" th:text="#{crop.farmer.nid}"></label>
+								<div class="controls ">
+									<input type="text" name="nid"
+										class="form-control" id="nid" th:placeholder="#{crop.farmer.nid}" th:value="${nid.isPresent() ? nid.get() : ''}">
+										<span class="help-inline"></span>
+								</div>
+							</div>
+							<div class="well clearFix"></div>
+							<div class="form-actions">
+								<button type="submit" class="btn btn-sm btn-primary" th:text="#{crop.save}"></button>
+							</div>
+							</form>
+							<!-- <div class="form-group">
 								<label><strong th:text="#{crop.farmer.nid}"> :</strong></label>
 								<div class="col-sm-6 " style="padding:0 0 0 0">
 									<input type="text" value="" id="datepicker"
@@ -21,7 +35,7 @@
 							<div>
 							<div class="form-actions" >
 								<button type="submit" class="btn btn-sm btn-primary" th:text="#{crop.save}"></button>
-							</div>
+							</div> -->
 							<hr>
 							<table class="table table-bordered table-hover">
 								<thead>
@@ -39,11 +53,12 @@
 									<tr th:each="farmer, iStat : ${page.getContent()}"
 										th:style="${iStat.odd}? 'font-weight: bold;'"
 										th:alt-title="${iStat.even}? 'even' : 'odd'">
-										<td th:text="${farmer.id}" />
+										<!-- <td th:text="${farmer.id}" /> -->
 										<td th:text="${farmer.name}" />
 										<td th:text="${farmer.nid}" />
 										<td th:text="${farmer.mobileNo}" />
 										<td th:text="${farmer.farmerCardNo}" />
+										<td th:text="${farmer.landAmount}" />
 										<td>
 											<a class="btn btn-mini btn-warning" href="#"><i class="icon-edit"></i> Edit</a>
 										</td>

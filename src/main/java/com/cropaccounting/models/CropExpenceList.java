@@ -2,11 +2,14 @@ package com.cropaccounting.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.PersistenceUnit;
+
+import com.cropaccounting.models.area.AreaCropExpence;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,4 +24,9 @@ import lombok.experimental.Accessors;
 public class CropExpenceList extends ExpenceBase {
 	@ManyToMany(cascade = CascadeType.ALL)
 	private List<ExpenceItemValue> expenceItemValueList = new ArrayList<ExpenceItemValue>();
+
+	public Optional<AreaCropExpence> getByMasterData(CropExpenceList masterData, List<AreaCropExpence> areaData) {
+		return areaData.stream().filter(data -> data.getCrop() == masterData.getCrop() 
+				&& data.getVarity() == masterData.getVarity()).findFirst();
+	}
 }

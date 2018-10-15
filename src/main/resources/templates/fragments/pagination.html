@@ -6,8 +6,16 @@
 <!-- Pagination Bar -->
 <div th:fragment="pagination">
 	<style>
+	@font-face {
+	   font-family: 'SutonnyMJ';
+	   src: url('../fonts/SolaimanLipi.ttf') format('truetype');
+	}
+	span {
+	    font-family: 'SutonnyMJ';
+	}
 	.pagination {
 	    display: inline-block;
+	    font-family: "SolaimanLipi";
 	}
 	
 	.pagination a {
@@ -16,6 +24,23 @@
 	    padding: 8px 16px;
 	    text-decoration: none;
 	    border: 1px solid #ddd;
+	}
+	
+	.pagination input {
+	    color: black;
+	    float: left;
+	    padding: 8px 16px;
+	    text-decoration: none;
+	    border: 1px solid #ddd;
+	}
+	
+	.pagination span {
+	    color: black;
+	    float: left;
+	    padding: 8px 16px;
+	    text-decoration: none;
+	    border: 1px solid #ddd;
+	    font-family: "SolaimanLipi";
 	}
 	
 	.pagination a.active {
@@ -38,14 +63,30 @@
 	</style>
   <!-- <div class="pagination pagination-centered"> -->
 	<div class="clearFix"></div>
-	<div class="pagination">
+	<!-- this is the working one <div class="pagination">
 		<a th:class="${page.firstPage} ? 'disabled' : ''" href="#">&laquo;</a>
 		<a th:href='@{${page.url}(page=${iter.index})}'
 			th:each='item, iter : ${page.items}'
 			th:class="${item.current}? 'active' : ''">
 			<span th:text="${iter.index + 1}"></span></a> 
 		<a th:class="${page.lastPage} ? 'disabled' : ''">&raquo;</a>
+	</div> -->
+	<form th:method="POST" th:action="@{${page.url}}">
+	<div class="pagination">
+		<a th:href='@{${page.url}(page=${currentPage.isPresent() && currentPage.get() > 0 ? currentPage.get() - 1 : 0})}' th:class="${page.firstPage} ? 'disabled' : ''" href="#">&laquo;</a>
+		<span lang="bn" th:text="${page.items.size()}"/>
+		<span th:text="#{title.of}"/>
+		<input type="text" maxlength="4" text-align="right" size="4" name="page" th:value="${currentPage.get()}"/>
+			<!-- <input class="glyphicon glyphicon-search" type="submit"/> -->
+		<span th:text="#{title.page}"/>
+		<!-- <a class="btn" onclick="addRowBelow(0);"><i class="fa fa-plus"></i></a> -->
+		<!-- <a th:href='@{${page.url}(page=${iter.index})}'
+			th:each='item, iter : ${page.items}'
+			th:class="${item.current}? 'active' : ''">
+			<span th:text="${iter.index + 1}"></span></a> --> 
+		<a th:href='@{${page.url}(page=${currentPage.isPresent() && currentPage.get() < page.items.size() - 1 ? currentPage.get() + 1 : 0})}' th:class="${page.lastPage} ? 'disabled' : ''">&raquo;</a>
 	</div>
+	</form>
 	<!--     <ul class="pagination">
     th:class="${#httpServletRequest.requestURI == '/eo/incomelist' ? 'nav-link active' : 'nav-link'}"
       <li th:class="${page.firstPage} ? 'disabled' : ''">

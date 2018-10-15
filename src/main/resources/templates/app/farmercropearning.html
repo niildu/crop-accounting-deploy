@@ -44,8 +44,8 @@
 							<label for="nid" class="" th:text="#{crop.farmer.nid}"></label>
 							<div class="controls ">
 								<input type="text" required="required" name="nid"
-									class="form-control" id="nid" th:placeholder="#{crop.farmer.nid}" value=""> <span
-									class="help-inline"></span>
+									class="form-control" id="nid" th:placeholder="#{crop.farmer.nid}" th:value="${nid.isPresent() ? nid.get() : ''}">
+									<span class="help-inline"></span>
 							</div>
 						</div>
 						<div class="well clearFix"></div>
@@ -71,7 +71,7 @@
 						</thead>
 						<tbody>
 							<div th:if="${incomeMap != null}">
-								<div th:each="crop : ${crops}">
+								<div th:each="crop : ${page.getContent()}">
 									<div th:each="key : ${incomeMap.keySet()}">
 									<tr>
 										<td colspan="4">
@@ -101,6 +101,7 @@
 							</div>
 						</tbody>
 					</table>
+					<ul th:replace="fragments/pagination :: pagination"></ul>
 				</div>
 			</div>
 		</div>

@@ -10,11 +10,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.cropaccounting.beans.CropVarietyBean;
-import com.cropaccounting.krishi.api.clientapi.KrishiAPI;
 import com.cropaccounting.krishiapi.KrishiAPIService;
 import com.cropaccounting.models.Crop;
 import com.cropaccounting.models.CropActivity;
@@ -118,9 +119,17 @@ public class CropAccountingService {
 	@Autowired
 	private KrishiAPIService krishiAPIService;
 	
-	@SuppressWarnings("unchecked")
-	public List<Object[]> getTypes() {
-		return em.createNativeQuery("SELECT distinct a.type FROM crops a").getResultList();
+//	@SuppressWarnings("unchecked")
+//	public List<Object[]> getTypes() {
+//		return em.createNativeQuery("SELECT distinct a.type FROM crops a").getResultList();
+//	}
+
+	public List<Object[]> getPortalTypes() {
+		return krishiAPIService.getCrops().stream().map(crop -> {
+			Object[] row = new Object[1];
+			row[0] = crop.getType();
+			return row;
+		}).distinct().collect(Collectors.toList());
 	}
 
 	public List<Object[]> getPortalCrops() {
@@ -133,21 +142,31 @@ public class CropAccountingService {
 		}).collect(Collectors.toList());
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<Object[]> getCrops() {
-//		return krishiAPIService.getCrops().stream().map(crop -> {
-//			Object[] row = new Object[3];
-//			row[0] = crop.getType();
-//			row[1] = crop.getName();
-//			row[2] = crop.getId();
-//			return row;
-//		}).collect(Collectors.toList());
-		return em.createNativeQuery("SELECT  a.type, a.name, a.id FROM crops a").getResultList();
-	}
+//	@SuppressWarnings("unchecked")
+//	public List<Object[]> getCrops() {
+////		return krishiAPIService.getCrops().stream().map(crop -> {
+////			Object[] row = new Object[3];
+////			row[0] = crop.getType();
+////			row[1] = crop.getName();
+////			row[2] = crop.getId();
+////			return row;
+////		}).collect(Collectors.toList());
+//		return em.createNativeQuery("SELECT  a.type, a.name, a.id FROM crops a").getResultList();
+//	}
 	
-	@SuppressWarnings("unchecked")
-	public List<Object[]> getVarieties() {
-		return em.createNativeQuery("SELECT a.crop_id, a.name, a.id FROM varieties a where crop_id is not null").getResultList();
+//	@SuppressWarnings("unchecked")
+//	public List<Object[]> getVarieties() {
+//		return em.createNativeQuery("SELECT a.crop_id, a.name, a.id FROM varieties a where crop_id is not null").getResultList();
+//	}
+	
+	public List<Object[]> getPortalVarieties() {
+		return krishiAPIService.getVarities().stream().map(variety -> {
+			Object[] row = new Object[3];
+			row[0] = variety.getCrop_id();
+			row[1] = variety.getName();
+			row[2] = variety.getId();
+			return row;
+		}).collect(Collectors.toList());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -254,7 +273,11 @@ public class CropAccountingService {
 	public List<Crop> getCropByNID(String nid, LocalDate startDate) {
 		return cropRepository.find(nid, startDate);
 	}
-	
+
+	public Page<Crop> getCropByNID(String nid, LocalDate startDate, Pageable pageable) {
+		return cropRepository.find(nid, startDate, pageable);
+	}
+
 	public List<Crops> getCropsList() {
 		return cropsRepository.findAll();
 	}
@@ -282,11 +305,19 @@ public class CropAccountingService {
 	public List<CropIncomeList> getCropIncomeLists() {
 		return cropIncomeListRepository.findAll();
 	}
-	
+
+	public Page<CropIncomeList> getCropIncomeLists(Pageable pageable) {
+		return cropIncomeListRepository.findAll(pageable);
+	}
+
 	public List<CropIncome> getCropIncomeList() {
 		return cropIncomeRepository.findAll();
 	}
-	
+
+	public Page<CropIncome> getCropIncomeList(Pageable pageable) {
+		return cropIncomeRepository.findAll(pageable);
+	}
+
 	public Optional<CropIncome> getCropIncomeById(Long id) {
 		return cropIncomeRepository.findById(id);
 	}
@@ -342,7 +373,11 @@ public class CropAccountingService {
 	public List<CropTaskMap> getCropTaskMapList() {
 		return cropTaskMapRepository.findAll();
 	}
-	
+
+	public Page<CropTaskMap> getCropTaskMapList(Pageable pageable) {
+		return cropTaskMapRepository.findAll(pageable);
+	}
+
 	public Optional<CropTaskMap> getCropTaskMap(Long id) {
 		return cropTaskMapRepository.findById(id);
 	}
@@ -350,7 +385,11 @@ public class CropAccountingService {
 	public List<CropExpenceList> getCropExpenceLists() {
 		return cropExpenceListRepository.findAll();
 	}
-	
+
+	public Page<CropExpenceList> getCropExpenceLists(Pageable pageable) {
+		return cropExpenceListRepository.findAll(pageable);
+	}
+
 	public List<IncomeItem> getIncomeItemList() {
 		return incomeItemRepository.findAll();
 	}
@@ -374,13 +413,14 @@ public class CropAccountingService {
 	}
 	
 	public void setCropSelection(Model model) {
-		model.addAttribute("types", getTypes());
-		model.addAttribute("crops", getCrops());
+		model.addAttribute("types", getPortalTypes());
+		model.addAttribute("crops", getPortalCrops());
 		List<Varieties> varieties = getVarietyList();
 		model.addAttribute("varietiesMap",
 				varieties.stream().collect(Collectors.groupingBy(variety -> variety.getId())));
 		model.addAttribute("cropsMap", getCropsList().stream().collect(Collectors.groupingBy(crop -> crop.getId())));
-		model.addAttribute("varieties", varieties);
+//		model.addAttribute("varieties", varieties);
+		model.addAttribute("varieties", getPortalVarieties());
 		List<CropVarietyBean> cropsList = getCropsList().stream()
 				.flatMap(crop -> getCropVarietyMap(crop, varieties).stream()).collect(Collectors.toList());
 		model.addAttribute("cropList", cropsList);

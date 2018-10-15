@@ -10,10 +10,12 @@ import com.cropaccounting.ex.BadRequestException;
 import com.cropaccounting.krishi.api.clientapi.ApiException;
 import com.cropaccounting.krishi.api.clientapi.KrishiAPI;
 import com.cropaccounting.krishi.api.clientapi.model.Crop;
+import com.cropaccounting.krishi.api.clientapi.model.Variety;
 
 @Service
 public class KrishiAPIService {
 	private static final String CROPS_CACHE = "krishi_crops";
+	private static final String VARIETIES_CACHE = "krishi_varieties";
 	private static final String A2I_KRISHI = "a2i";
 	@Autowired
 	private KrishiAPI service;
@@ -24,6 +26,15 @@ public class KrishiAPIService {
 			return service.getCrops().getData();
 		} catch (ApiException e) {
 			throw new BadRequestException(A2I_KRISHI, "Crops not found");
+		}
+	}
+	
+	@Cacheable(value = VARIETIES_CACHE, unless = "#result == null")
+	public List<Variety> getVarities() {
+		try {
+			return service.getVarieities().getData();
+		} catch (ApiException e) {
+			throw new BadRequestException(A2I_KRISHI, "Varieties not found");
 		}
 	}
 }

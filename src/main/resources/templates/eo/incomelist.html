@@ -14,18 +14,27 @@
 								<div class="form-group">
 									<label><strong th:text="#{income.allcountry}"> :</strong></label>
 								</div>
-								<table class="table table-striped">
+								<table class="table table-bordered table-hover">
 									<thead>
 										<tr>
 											<th>#</th>
 											<th th:text="#{crop.name}"></th>
 											<th th:text="#{crop.variety}"></th>
 											<th th:text="#{crop.type}"></th>
-											<th></th>
+											<th>
+											<label class="label pull-left m-t-xs"><strong th:text="#{income.allcountry}"> :</strong></label>
+											<label class="label pull-right m-t-xs"><strong th:text="#{income.area}"> :</strong></label>
+											<!-- <table width="100%">
+												<tr>
+												<td><label><strong th:text="#{income.allcountry}"> :</strong></label></td>
+												<td><label><strong th:text="#{income.area}"> :</strong></label></td>
+												</tr>
+											</table> -->
+											</th>
 										</tr>
 									</thead>
 									<tbody>
-										<tr th:each="cropTaskMap, iter : ${cropIncomes}">
+										<tr th:each="cropTaskMap, iter : ${page.getContent()}">
 											<th scope="row" th:text="${iter.index + 1}"></th>
 											<td th:text="${cropTaskMap.cropName}"></td>
 											<td th:text="${cropTaskMap.varityName}"></td>
@@ -35,40 +44,16 @@
 												th:href="@{/eo/areacropearning?id=} + ${cropTaskMap.id}"><i
 													class="icon-edit"></i> 
 													<span th:text="#{edit}"></span></a>
-												
-											</td>
-										</tr>
-									</tbody>
-								</table>
-								<div class="form-group">
-									<label><strong th:text="#{income.area}"> :</strong></label>
-								</div>
-								<table class="table table-striped">
-									<thead>
-										<tr>
-											<th>#</th>
-											<th th:text="#{crop.name}"></th>
-											<th th:text="#{crop.variety}"></th>
-											<th th:text="#{crop.type}"></th>
-											<th></th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr th:each="cropTaskMap, iter : ${areaIncomes}">
-											<th scope="row" th:text="${iter.index + 1}"></th>
-											<td th:text="${cropTaskMap.cropName}"></td>
-											<td th:text="${cropTaskMap.varityName}"></td>
-											<td th:text="${cropTaskMap.type}"></td>
-											<td><a
-												class="btn btn-mini btn-warning"
-												th:href="@{/eo/updateareacropearning?id=} + ${cropTaskMap.id}"><i
+												<a th:if="${cropTaskMap.getByMasterData(cropTaskMap, areaIncomes).isPresent()}"
+													class="btn btn-mini btn-warning"
+													th:href="@{/eo/updateareacropearning?id=} + ${cropTaskMap.getByMasterData(cropTaskMap, areaIncomes).get().id}"><i
 													class="icon-edit"></i> 
 													<span th:text="#{edit}"></span></a>
-												
 											</td>
 										</tr>
 									</tbody>
 								</table>
+								<ul th:replace="fragments/pagination :: pagination"></ul>
 							</div>
 						</div>
 					</div>

@@ -14,7 +14,7 @@
 								<div class="form-group">
 									<label><strong th:text="#{income.allcountry}"> :</strong></label>
 								</div>
-								<table class="table table-striped">
+								<table class="table table-bordered table-hover">
 									<thead>
 										<tr>
 											<th>#</th>
@@ -25,52 +25,26 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr th:each="expence, iter : ${cropExpences}">
+										<tr th:each="expence, iter : ${page.getContent()}">
 											<th scope="row" th:text="${iter.index + 1}"></th>
-											<td th:text="${crops.get('' + expence.crop).stream().findFirst().orElse('').name}"></td>
-											<td th:text="${varieties.get('' + expence.varity).stream().findFirst().orElse('').name}"></td>
+											<td th:text="${crops.get('' + expence.crop) != null ? crops.get('' + expence.crop).stream().findFirst().orElse('').name : ''}"></td>
+											<td th:text="${varieties.get('' + expence.varity) != null ? varieties.get('' + expence.varity).stream().findFirst().orElse('').name : ''}"></td>
 											<td th:text="${expence.type}"></td> 
 											<td><a
 												class="btn btn-mini btn-warning"
 												th:href="@{/eo/createAreaTaskExpenditure?id=} + ${expence.id}"><i
 													class="icon-edit"></i> 
 													<span th:text="#{edit}"></span></a>
-												
-											</td>
-										</tr>
-									</tbody>
-								</table>
-								<div class="form-group">
-									<label><strong th:text="#{income.area}"> :</strong></label>
-								</div>
-								<table class="table table-striped">
-									<thead>
-										<tr>
-											<tr>
-											<th>#</th>
-											<th th:text="#{crop.name}"></th>
-											<th th:text="#{crop.variety}"></th>
-											<th th:text="#{crop.type}"></th>
-											<th></th>
-										</tr>
-										</tr>
-									</thead>
-									<tbody>
-										<tr th:each="expence, iter : ${areaExpences}">
-											<th scope="row" th:text="${iter.index + 1}"></th>
-											<td th:text="${crops.get('' + expence.crop).stream().findFirst().orElse('').name}"></td>
-											<td th:text="${varieties.get('' + expence.varity).stream().findFirst().orElse('').name}"></td>
-											<td th:text="${expence.type}"></td>
-											<td><a
-												class="btn btn-mini btn-warning"
-												th:href="@{/eo/updateAreaTaskExpenditure?id=} + ${expence.id}"><i
+												<a th:if="${expence.getByMasterData(expence, areaExpences).isPresent()}"
+													class="btn btn-mini btn-warning"
+ 													th:href="@{/eo/updateAreaTaskExpenditure?id=} + ${expence.getByMasterData(expence, areaExpences).get().id}"><i
 													class="icon-edit"></i> 
 													<span th:text="#{edit}"></span></a>
-												
 											</td>
 										</tr>
 									</tbody>
 								</table>
+								<ul th:replace="fragments/pagination :: pagination"></ul>
 							</div>
 						</div>
 					</div>
