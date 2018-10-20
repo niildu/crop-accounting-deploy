@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer.UserDetailsBuilder;
@@ -17,6 +17,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 
 import com.cropaccounting.config.SpringSecurityConfigUserList.User;
 
+@Order(1)
 @EnableWebSecurity
 @ComponentScan("com.cropaccounting")
 @Configuration
@@ -43,7 +44,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.and().exceptionHandling()
 			.accessDeniedPage("/Access_Denied");*/
 		http.csrf().disable().authorizeRequests()
-			.antMatchers("/", "/about", "/signup", "/lib/**", "/css/**", "/img/**", "/js/**").permitAll()
+			.antMatchers("/", "/about", "/signup", "/lib/**", "/css/**", "/img/**", "/js/**", "/saml/**").permitAll()
 			//.antMatchers("/cropaccounting/**").hasRole("ADMIN")
 			//.antMatchers("/cropmanagement/**").access("hasRole('ADMIN')")
 			.antMatchers("/cropmanagement/**").access("hasAnyRole('ADMIN','EO')")
